@@ -9,4 +9,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Model\Model.csproj" />
+    <ProjectReference Include="..\StaticEvaluaton\StaticEvaluaton.csproj" />
+  </ItemGroup>
+
 </Project>
