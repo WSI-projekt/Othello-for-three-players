@@ -1,19 +1,14 @@
 ﻿namespace Othello_for_three_players.Model
 {
-    public enum Player: byte
-    {
-        Player1 = Field.Player1Disc,
-        Player2 = Field.Player2Disc,
-        Player3 = Field.Player3Disc,
-    }
 
-    public struct Move
+
+    public readonly struct Move
     {
         public int Row { get; }
         public int Column { get; }
-        public Player Player { get; }
+        public PlayerID Player { get; }
 
-        public Move(Player player, int row, int col)
+        public Move(PlayerID player, int row, int col)
         {
             if (!Validate(row, col))
                 throw new ArgumentException($"Invalid move coordinates: {row}:{col}");
