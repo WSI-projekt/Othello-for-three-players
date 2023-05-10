@@ -15,7 +15,7 @@
         private Field[,] fields;
 
         public Field this[int row, int col]
-            { get { return fields[row, col]; } }
+        { get { return fields[row, col]; } }
 
         public Board()
         {
@@ -26,9 +26,9 @@
 
         public void MakeMove(Move move)
         {
-            // TODO: maybe some validation
-
             fields[move.Row, move.Column] = (Field)move.Player;
+
+            // TODO: Change board after movement
         }
 
         public void Clear()
@@ -40,6 +40,26 @@
                     fields[row, col] = Field.Empty;
                 }
             }
+        }
+
+        public void StartingPosition()
+        {
+            Clear();
+
+            // Player1 Discs
+            fields[3, 3] = Field.Player1Disc;
+            fields[4, 4] = Field.Player1Disc;
+            fields[5, 5] = Field.Player1Disc;
+
+            // Player2 Discs
+            fields[3, 4] = Field.Player2Disc;
+            fields[4, 5] = Field.Player2Disc;
+            fields[3, 5] = Field.Player2Disc;
+
+            // Player3 Discs
+            fields[3, 4] = Field.Player3Disc;
+            fields[4, 5] = Field.Player3Disc;
+            fields[5, 3] = Field.Player3Disc;
         }
     }
 }
