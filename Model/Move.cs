@@ -1,4 +1,6 @@
-﻿namespace Othello_for_three_players.Model
+﻿using Othello_for_three_players.Model.Players;
+
+namespace Othello_for_three_players.Model
 {
 
 
