@@ -11,6 +11,18 @@ namespace Othello_for_three_players.Model.Heuristic
     {
         Board board;
 
+        int[,] evaluationtab = new int[9, 9] {
+{4, -3, 2, 2, 2, 2, 2, -3, 4 },
+{ -3, -4, -1,-1, -1, -1, -1 ,-4, -3 },
+{ 2, -1, 1, 0,0, 0, 1, -1, 2 },
+{ 2, -1, 0, 1,1, 1, 0, -1, 2 },
+{ 2, -1, 0, 1,1, 1, 0, -1, 2 },
+{ 2,-1, 0, 1,1, 1, 0, -1, 2 },
+{ 2, -1, 1, 0,0, 0, 1, -1, 2 },
+{ -3, -4, -1, -1,-1, -1, -1, -4, -3 },
+{ 4, -3, 2, 2,2, 2, 2, -3, 4,}
+        };
+
         public PegsAmountEvaluation(Board b)
         {
             board = b;
@@ -23,7 +35,9 @@ namespace Othello_for_three_players.Model.Heuristic
             {
                 for(int j = 0; j < Board.BoardSize; j++)
                 {
-                    tab[(int)board[i, j]]++;
+                    int temp = (int)board[i,j] - 1;
+                    if (temp != -1) { }
+                    tab[temp]+= evaluationtab[i,j];
                 }
             }
             tab[0] = tab[0] - (tab[1] + tab[2]) / 2.0;
