@@ -4,7 +4,7 @@ namespace Othello_for_three_players.Model
 {
     public class GameEvent { }
 
-    public class GameHaveStaretd : GameEvent { }
+    public class GameHaveStarted : GameEvent { }
 
     public class MoveWasMade
     {
