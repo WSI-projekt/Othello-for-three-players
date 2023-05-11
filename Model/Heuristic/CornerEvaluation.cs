@@ -8,7 +8,15 @@ namespace Othello_for_three_players.Model.Heuristic
 {
     internal class CornerEvaluation : IEvaluation
     {
-        public override (double a, double b, double c) Evaluate(Board board)
+
+        Board board;
+
+        public CornerEvaluation(Board b)
+        {
+            board = b;
+        }
+
+        public override (double a, double b, double c) Evaluate()
         {
             double[] tab = new double[2];
 

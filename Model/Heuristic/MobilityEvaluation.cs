@@ -8,7 +8,13 @@ namespace Othello_for_three_players.Model.Heuristic
 {
     internal class MobilityEvaluation : IEvaluation
     {
-        public override (double a, double b, double c) Evaluate(Board board)
+        Board board;
+
+        public MobilityEvaluation(Board board)
+        {
+            this.board = board;
+        }
+        public override (double a, double b, double c) Evaluate()
         {
             double[] tab = new double[2];
             tab[0] = board.GenerateAllPossibleMoves(Players.PlayerID.Player1).Count;

@@ -28,7 +28,7 @@ namespace Othello_for_three_players.Model.Heuristic
             board = b;
         }
 
-        public override (double a, double b, double c) Evaluate(Board board)
+        public override (double, double, double) Evaluate()
         {
             double[] tab = new double[3];
             for(int i = 0; i < Board.BoardSize; i++)
