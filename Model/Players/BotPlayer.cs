@@ -2,12 +2,6 @@
 
 namespace Othello_for_three_players.Model.Players
 {
-    public struct ShallowReturnValue
-    {
-        public Move PlayersMove { get; set; }
-        public Vector3 Evaluation { get; set; }
-    }
-
     public class BotPlayer : Player
     {
         private int RecurencyDepth;
@@ -23,14 +17,13 @@ namespace Othello_for_three_players.Model.Players
             return Shallow(board, ID, HeuristicsUpperSumBound, 0).PlayersMove;
         }
 
-        ShallowReturnValue Shallow(Board board, PlayerID playerID, double upperSumBound, int recurencyDepth)
+        ShallowStruct Shallow(Board board, PlayerID playerID, double upperSumBound, int recurencyDepth)
         {
-            ShallowReturnValue best = new ShallowReturnValue();
-            ShallowReturnValue current;
+            ShallowStruct best = new ShallowStruct();
+            ShallowStruct current;
 
             if(recurencyDepth > RecurencyDepth) // terminal
             {
-                best.PlayersMove = new Move();
                 best.Evaluation = EvaluateHeuristicsBoard(playerID, board);
                 return best;
             }
@@ -44,6 +37,7 @@ namespace Othello_for_three_players.Model.Players
             best.PlayersMove = possibleMoves.FirstOrDefault();
 
             possibleMoves.RemoveAt(0); // deleting the first child
+
             foreach(Move move in possibleMoves)
             {
                 Board nextInLineChildBoard = Board.ExecuteMoveReturnCopy(move, board);
