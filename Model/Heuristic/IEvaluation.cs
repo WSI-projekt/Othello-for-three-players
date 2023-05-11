@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace Othello_for_three_players.Model.Heuristic
 {
-    internal class Class1
+    public abstract class IEvaluation
     {
+        public abstract (double a, double b, double c) Evaluate(Board board);
+
     }
 }
