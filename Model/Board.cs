@@ -1,4 +1,6 @@
-﻿namespace Othello_for_three_players.Model
+﻿using Othello_for_three_players.Model.Players;
+
+namespace Othello_for_three_players.Model
 {
     public enum Field: byte
     {
@@ -42,6 +44,11 @@
             }
         }
 
+        public List<Move> GenerateAllPossibleMovesForAPlayer(PlayerID playerID)
+        {
+            throw new NotImplementedException();
+        }
+
         public void StartingPosition()
         {
             Clear();
@@ -60,6 +67,11 @@
             fields[3, 4] = Field.Player3Disc;
             fields[4, 5] = Field.Player3Disc;
             fields[5, 3] = Field.Player3Disc;
+        }
+
+        public static Board ExecuteMoveReturnCopy(Move move, Board board)
+        {
+            throw new NotImplementedException();
         }
     }
 }
