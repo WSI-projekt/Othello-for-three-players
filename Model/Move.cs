@@ -1,7 +1,7 @@
-﻿namespace Othello_for_three_players.Model
+﻿using Othello_for_three_players.Model.Players;
+
+namespace Othello_for_three_players.Model
 {
-
-
     public readonly struct Move
     {
         public int Row { get; }
