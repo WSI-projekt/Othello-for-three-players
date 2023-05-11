@@ -1,6 +1,6 @@
 ﻿namespace Othello_for_three_players
 {
-    partial class Form1
+    partial class MainForm
     {
         /// <summary>
         ///  Required designer variable.
