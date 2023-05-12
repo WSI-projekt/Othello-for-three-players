@@ -95,12 +95,12 @@ namespace Othello_for_three_players.Model
             // Player2 Discs
             fields[3, 4] = Field.Player2Disc;
             fields[4, 5] = Field.Player2Disc;
-            fields[3, 5] = Field.Player2Disc;
+            fields[5, 3] = Field.Player2Disc;
 
             // Player3 Discs
-            fields[3, 4] = Field.Player3Disc;
-            fields[4, 5] = Field.Player3Disc;
-            fields[5, 3] = Field.Player3Disc;
+            fields[4, 3] = Field.Player3Disc;
+            fields[5, 4] = Field.Player3Disc;
+            fields[3, 5] = Field.Player3Disc;
         }
 
         public static Board FromMove(Move move, Board board)
