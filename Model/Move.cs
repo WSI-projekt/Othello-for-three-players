@@ -20,8 +20,8 @@ namespace Othello_for_three_players.Model
 
         private static bool Validate(int row, int col)
         {
-            return 0 >= row && row <= Board.BoardSize &&
-                   0 >= col && row <= Board.BoardSize;
+            return 0 <= row && row <= Board.BoardSize &&
+                   0 <= col && row <= Board.BoardSize;
         }
     }
 }
