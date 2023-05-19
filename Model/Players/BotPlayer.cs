@@ -29,10 +29,10 @@ namespace Othello_for_three_players.Model.Players
             }
 
             // nonterminal
-            List<Move> possibleMoves = board.GenerateAllPossibleMovesForAPlayer(playerID);
+            List<Move> possibleMoves = board.GenerateAllPossibleMoves(playerID);
             PlayerID nextPlayerID = GetNextPlayersID(playerID);
 
-            Board firstChildBoard = Board.ExecuteMoveReturnCopy(possibleMoves.FirstOrDefault(), board);
+            Board firstChildBoard = Board.FromMove(possibleMoves.FirstOrDefault(), board);
             best = Shallow(firstChildBoard, nextPlayerID, upperSumBound, recurencyDepth + 1);
             best.PlayersMove = possibleMoves.FirstOrDefault();
 
@@ -40,7 +40,7 @@ namespace Othello_for_three_players.Model.Players
 
             foreach(Move move in possibleMoves)
             {
-                Board nextInLineChildBoard = Board.ExecuteMoveReturnCopy(move, board);
+                Board nextInLineChildBoard = Board.FromMove(move, board);
                 if (best.Evaluation[(int)playerID] >= upperSumBound)
                 {
                     return best;
