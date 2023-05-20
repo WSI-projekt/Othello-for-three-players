@@ -8,7 +8,7 @@
         {
             this.ID = ID;
         }
-
+        public abstract (Move move, bool wasMade) MakeMoveOnlyForTesting(Board board);
         public abstract Move MakeMove(Board board);
     }
 }

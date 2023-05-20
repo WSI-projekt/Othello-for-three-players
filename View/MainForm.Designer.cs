@@ -35,6 +35,7 @@
             StartSimulation = new Button();
             Test = new Button();
             BackWork = new System.ComponentModel.BackgroundWorker();
+            BackgroundGame = new System.ComponentModel.BackgroundWorker();
             tableLayoutPanel1.SuspendLayout();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)Canvas).BeginInit();
@@ -111,7 +112,13 @@
             // BackWork
             // 
             BackWork.DoWork += BackWork_DoWork;
+            BackWork.ProgressChanged += BackWork_ProgressChanged;
             BackWork.RunWorkerCompleted += BackWork_RunWorkerCompleted;
+            // 
+            // BackgroundGame
+            // 
+            BackgroundGame.DoWork += BackgroundGame_DoWork;
+            BackgroundGame.RunWorkerCompleted += BackgroundGame_RunWorkerCompleted;
             // 
             // MainForm
             // 
@@ -137,5 +144,6 @@
         private GroupBox groupBox1;
         private Button Test;
         private Button StartSimulation;
+        private System.ComponentModel.BackgroundWorker BackgroundGame;
     }
 }

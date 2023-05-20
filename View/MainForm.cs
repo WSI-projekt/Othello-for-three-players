@@ -25,6 +25,7 @@ namespace Othello_for_three_players
         public MainForm()
         {
             InitializeComponent();
+            // I have no idea how to pass GameEventHandler
             BlackDisks1 = CreateBrushSet(new Point(75, 0), new Point(0, 75),
                 Color.FromArgb(49, 49, 49), Color.FromArgb(59, 59, 59),
                 Color.FromArgb(48, 48, 48), Color.FromArgb(8, 8, 8),
@@ -50,7 +51,15 @@ namespace Othello_for_three_players
                 Color.FromArgb(210, 210, 210), Color.FromArgb(140, 140, 140),
                 Color.FromArgb(210, 210, 210), Color.FromArgb(215, 215, 215));
             NewDrawArea(681, 681);
-            // TODO: initialize game controller
+            gameController = new GameController(new BotPlayer(PlayerID.Player1, 3, 10),
+                new BotPlayer(PlayerID.Player2, 3, 10),
+                new BotPlayer(PlayerID.Player3, 3, 10),
+                null, this);
+            gameController.PrepareBoard();
+        }
+        public bool IsAnimationDone()
+        {
+            return BackWork.IsBusy;
         }
         public List<LinearGradientBrush> CreateBrushSet(Point begin, Point end, Color first, Color second, Color third, Color fourth, Color fifth, Color sixth)
         {
@@ -101,16 +110,27 @@ namespace Othello_for_three_players
             // TODO: Make move action on view
             throw new NotImplementedException();
         }*/
-        private void MakeMove(Board board, PlayerID ID, Move move, Queue<(int row, int col)> fieldsToFlip)
+        public void MakeMove(Board board, Board beforemove, Move move)
         {
             // TODO: Make move action on view
-            this.board = board;
-            this.playerID = ID;
-            this.move = move;
-            this.fieldsToFlip = fieldsToFlip;
+
             if (BackWork.IsBusy != true)
             {
                 // Start the asynchronous operation.
+                this.board = board;
+                this.playerID = move.Player;
+                this.move = move;
+                this.fieldsToFlip = new Queue<(int row, int col)>();
+                for (int i = 0; i < 9; i++)
+                {
+                    for (int j = 0; j < 9; j++)
+                    {
+                        if (beforemove[i, j] != board[i, j] && (move.Row, move.Column) != (i, j))
+                        {
+                            fieldsToFlip.Enqueue((i, j));
+                        }
+                    }
+                }
                 BackWork.RunWorkerAsync();
             }
 
@@ -120,6 +140,10 @@ namespace Othello_for_three_players
         {
             throw new NotImplementedException();
         }
+        public void DrawDisksOnBoard_GameController(Board board, Queue<(int row, int col)> fieldsToChange)
+        {
+            DrawDisksOnBoard(Graphics.FromImage(gameBoard), board, fieldsToChange);
+        }
         private void NewDrawArea(int w, int h)
         {
             //creates new bitmap, draws board and starting position
@@ -127,9 +151,9 @@ namespace Othello_for_three_players
             gameBoard = new Bitmap(w, h);
             Canvas.Image = gameBoard;
             DrawBoard(Graphics.FromImage(gameBoard));
-            Board board = new Board();
-            board.StartingPosition();
-            DrawDisksOnBoard(Graphics.FromImage(gameBoard), board, new Queue<(int row, int col)>());
+            // Board board = new Board();
+            // board.StartingPosition();
+
         }
         private void DrawDisksOnBoard(Graphics g, Board board, Queue<(int row, int col)> fieldsToChange)
         {
@@ -257,13 +281,15 @@ namespace Othello_for_three_players
 
         private void Test_Click(object sender, EventArgs e)
         {
-            Board board = new Board();
+            //gameController.TestMove();
+            BackgroundGame.RunWorkerAsync();
+            /*Board board = new Board();
             board.StartingPosition();
             Move move = new Move(PlayerID.Player1, 2, 5);
             Queue<(int row, int col)> q = new Queue<(int row, int col)>();
             q.Enqueue((3, 5));
             q.Enqueue((4, 5));
-            MakeMove(board, PlayerID.Player1, move, q);
+            MakeMove(board, PlayerID.Player1, move, q);*/
             Test.Enabled = false;
         }
 
@@ -278,7 +304,7 @@ namespace Othello_for_three_players
 
         private void BackWork_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
-            Test.Enabled = true;
+            // Test.Enabled = true;
         }
 
         private void StartSimulation_Click(object sender, EventArgs e)
@@ -287,6 +313,22 @@ namespace Othello_for_three_players
             //TODO: implement game simulation
             Test.Enabled = false;
             StartSimulation.Enabled = false;
+            BackgroundGame.RunWorkerAsync();
+
+        }
+
+        private void BackgroundGame_DoWork(object sender, DoWorkEventArgs e)
+        {
+            gameController.TestThreeMoves();
+        }
+
+        private void BackgroundGame_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            StartSimulation.Enabled = true;
+        }
+
+        private void BackWork_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
 
         }
     }

@@ -15,5 +15,9 @@
         {
             return makeMoveDelegate(board, ID);
         }
+        public override (Move move, bool wasMade) MakeMoveOnlyForTesting(Board board)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

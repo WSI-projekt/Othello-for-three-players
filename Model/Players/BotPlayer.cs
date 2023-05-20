@@ -11,7 +11,12 @@ namespace Othello_for_three_players.Model.Players
             RecurencyDepth = recurencyDepth;
             HeuristicsUpperSumBound = upperSumBound;
         }
-
+        public override (Move move,bool wasMade) MakeMoveOnlyForTesting(Board board)
+        {
+            var possible = board.GenerateAllPossibleMoves(ID);
+            if(possible != null && possible.Count !=0) {return (possible[0],true); }
+            return (new Move(ID,0,0),false);
+        }
         public override Move MakeMove(Board board)
         {
             return Shallow(board, ID, HeuristicsUpperSumBound, 0).PlayersMove;
@@ -29,10 +34,10 @@ namespace Othello_for_three_players.Model.Players
             }
 
             // nonterminal
-            List<Move> possibleMoves = board.GenerateAllPossibleMovesForAPlayer(playerID);
+            List<Move> possibleMoves = board.GenerateAllPossibleMoves(playerID);
             PlayerID nextPlayerID = GetNextPlayersID(playerID);
 
-            Board firstChildBoard = Board.ExecuteMoveReturnCopy(possibleMoves.FirstOrDefault(), board);
+            Board firstChildBoard = Board.FromMove(possibleMoves.FirstOrDefault(), board);
             best = Shallow(firstChildBoard, nextPlayerID, upperSumBound, recurencyDepth + 1);
             best.PlayersMove = possibleMoves.FirstOrDefault();
 
@@ -40,7 +45,7 @@ namespace Othello_for_three_players.Model.Players
 
             foreach(Move move in possibleMoves)
             {
-                Board nextInLineChildBoard = Board.ExecuteMoveReturnCopy(move, board);
+                Board nextInLineChildBoard = Board.FromMove(move, board);
                 if (best.Evaluation[(int)playerID] >= upperSumBound)
                 {
                     return best;
