@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             tableLayoutPanel1 = new TableLayoutPanel();
             panel1 = new Panel();
             Canvas = new PictureBox();
@@ -36,6 +37,7 @@
             Test = new Button();
             BackWork = new System.ComponentModel.BackgroundWorker();
             BackgroundGame = new System.ComponentModel.BackgroundWorker();
+            timer1 = new System.Windows.Forms.Timer(components);
             tableLayoutPanel1.SuspendLayout();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)Canvas).BeginInit();
@@ -120,6 +122,11 @@
             BackgroundGame.DoWork += BackgroundGame_DoWork;
             BackgroundGame.RunWorkerCompleted += BackgroundGame_RunWorkerCompleted;
             // 
+            // timer1
+            // 
+            timer1.Interval = 50;
+            timer1.Tick += timer1_Tick;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -145,5 +152,6 @@
         private Button Test;
         private Button StartSimulation;
         private System.ComponentModel.BackgroundWorker BackgroundGame;
+        private System.Windows.Forms.Timer timer1;
     }
 }

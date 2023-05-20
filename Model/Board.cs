@@ -28,6 +28,14 @@ namespace Othello_for_three_players.Model
             fields = new Field[BoardSize, BoardSize];
         }
 
+        public static Board FromMove(Move move, Board board)
+        {
+            Board newBoard = (Board)board.Clone();
+            newBoard.MakeMove(move);
+
+            return newBoard;
+        }
+
         public void MakeMove(Move move)
         {
             if (fields[move.Row, move.Column] != Field.Empty)
@@ -80,131 +88,73 @@ namespace Othello_for_three_players.Model
             }
         }
 
-        public List<Move> GenerateAllPossibleMoves(PlayerID playerID)
+        public List<Move> GeneratePossibleMoves(PlayerID playerID)
         {
-            List<Move> possibleMoves = new List<Move>();
-            for(int i=0; i<BoardSize; i++)
+            HashSet<Move> result = new HashSet<Move>();
+
+            foreach (var field in PlayersDiscs(playerID))
             {
-                for(int j=0; j<BoardSize; j++)
+                foreach (var direction in Enum.GetValues<CaptureDirection>())
                 {
-                    if (fields[i,j]==Field.Empty)
+                    bool enemyDiscFound = false;
+
+                    foreach (var potentialMove in FieldsFrom(direction, field))
                     {
-                        if(IsMovePossible(playerID,i,j))
+                        if (potentialMove.Value == (Field)playerID)
+                            break;
+
+                        if (potentialMove.Value != Field.Empty)
+                            enemyDiscFound = true;
+                        else
                         {
-                            possibleMoves.Add(new Move(playerID, i, j));
+                            if (enemyDiscFound)
+                                result.Add(new Move(playerID, potentialMove.Row, potentialMove.Col));
+                            break;
                         }
                     }
                 }
             }
-            return possibleMoves;
-        }
-        public bool IsMovePossible(PlayerID playerID, int row, int col)
-        {
-            return IsPossibleDown(playerID, row, col) || IsPossibleDownLeft(playerID, row, col) || IsPossibleDownRight(playerID, row, col)
-                || IsPossibleUp(playerID, row, col) || IsPossibleUpLeft(playerID, row, col) || IsPossibleUpRight(playerID, row, col)
-                || IsPossibleLeft(playerID, row, col) || IsPossibleRight(playerID, row, col);
 
+            return result.ToList();
         }
-        public bool IsPossibleUpLeft(PlayerID playerID, int row, int col)
+
+        public List<KeyValuePair<Move, int>> GeneratePossibleMovesWithCaptures(PlayerID playerID)
         {
-            if(row==0 ||  col==0) return false;
-            if (fields[row - 1, col - 1] == Field.Empty || fields[row - 1, col - 1] == (Field)playerID) return false;
-            int i = row - 2, j = col - 2;
-            while(i>=0 && j>=0)
+            Dictionary<Move, int> result = new Dictionary<Move, int>();
+
+            foreach (var field in PlayersDiscs(playerID))
             {
-                if (fields[i,j]==(Field)playerID) return true;
-                if (fields[i, j] == Field.Empty) return false;
-                i--;
-                j--;
+                foreach (var direction in Enum.GetValues<CaptureDirection>())
+                {
+                    int captures = 0;
+
+                    foreach (var potentialMove in FieldsFrom(direction, field))
+                    {
+                        if (potentialMove.Value == (Field)playerID)
+                            break;
+
+                        if (potentialMove.Value != Field.Empty)
+                            captures++;
+                        else
+                        {
+                            if (captures > 0)
+                            {
+                                Move move = new Move(playerID, potentialMove.Row, potentialMove.Col);
+
+                                if (result.ContainsKey(move))
+                                    result[move] += captures;
+                                else
+                                    result.Add(move, captures);
+                            }
+
+                        }
+                    }
+                }
             }
-            return false;
+
+            return result.ToList();
         }
-        public bool IsPossibleUp(PlayerID playerID, int row, int col)
-        {
-            if (row == 0) return false;
-            if (fields[row - 1, col] == Field.Empty || fields[row - 1, col] == (Field)playerID) return false;
-            for (int i = row - 2; i >= 0; i--)
-            {
-                if (fields[i, col] == (Field)playerID) return true;
-                if (fields[i, col] == Field.Empty) return false;
-            }
-            return false;
-        }
-        public bool IsPossibleUpRight(PlayerID playerID, int row, int col)
-        {
-            if (row == 0 || col == BoardSize-1) return false;
-            if (fields[row - 1, col + 1] == Field.Empty || fields[row - 1, col + 1] == (Field)playerID) return false;
-            int i = row - 2, j = col + 2;
-            while (i >= 0 && j < BoardSize)
-            {
-                if (fields[i, j] == (Field)playerID) return true;
-                if (fields[i, j] == Field.Empty) return false;
-                i--;
-                j++;
-            }
-            return false;
-        }
-        public bool IsPossibleLeft(PlayerID playerID, int row, int col)
-        {
-            if (col == 0) return false;
-            if (fields[row, col - 1] == Field.Empty || fields[row, col - 1] == (Field)playerID) return false;
-            for (int j = col - 2; j >= 0; j--)
-            {
-                if (fields[row, j] == (Field)playerID) return true;
-                if (fields[row, j] == Field.Empty) return false;
-            }
-            return false;
-        }
-        public bool IsPossibleRight(PlayerID playerID, int row, int col)
-        {
-            if (col == BoardSize - 1) return false;
-            if (fields[row, col + 1] == Field.Empty || fields[row, col + 1] == (Field)playerID) return false;
-            for (int j = col + 2; j < BoardSize; j++)
-            {
-                if (fields[row, j] == (Field)playerID) return true;
-                if (fields[row, j] == Field.Empty) return false;
-            }
-            return false;
-        }
-        public bool IsPossibleDownLeft(PlayerID playerID, int row, int col)
-        {
-            if (row == BoardSize-1 || col ==0) return false;
-            if (fields[row + 1, col - 1] == Field.Empty || fields[row + 1, col - 1] == (Field)playerID) return false;
-            int i = row + 2, j = col - 2;
-            while (i < BoardSize && j >= 0)
-            {
-                if (fields[i, j] == (Field)playerID) return true;
-                if (fields[i, j] == Field.Empty) return false;
-                i++;
-                j--;
-            }
-            return false;
-        }
-        public bool IsPossibleDown(PlayerID playerID, int row, int col)
-        {
-            if (row == BoardSize - 1) return false;
-            if (fields[row + 1, col] == Field.Empty || fields[row + 1, col] == (Field)playerID) return false;
-            for (int i = row + 2; i < BoardSize - 1; i++)
-            {
-                if (fields[i, col] == (Field)playerID) return true;
-                if (fields[i, col] == Field.Empty) return false;
-            }
-            return false;
-        }
-        public bool IsPossibleDownRight(PlayerID playerID, int row, int col)
-        {
-            if (row == BoardSize - 1 || col == BoardSize - 1) return false;
-            if (fields[row + 1, col + 1] == Field.Empty || fields[row + 1, col + 1] == (Field)playerID) return false;
-            int i = row + 2, j = col + 2;
-            while (i < BoardSize && j <BoardSize)
-            {
-                if (fields[i, j] == (Field)playerID) return true;
-                if (fields[i, j] == Field.Empty) return false;
-                i++;
-                j++;
-            }
-            return false;
-        }
+
         public void StartingPosition()
         {
             Clear();
@@ -223,14 +173,6 @@ namespace Othello_for_three_players.Model
             fields[4, 3] = Field.Player3Disc;
             fields[5, 4] = Field.Player3Disc;
             fields[3, 5] = Field.Player3Disc;
-        }
-
-        public static Board FromMove(Move move, Board board)
-        {
-            Board newBoard = (Board)board.Clone();
-            newBoard.MakeMove(move);
-            
-            return newBoard;
         }
 
         public object Clone()
@@ -261,38 +203,37 @@ namespace Othello_for_three_players.Model
             UpLeft
         }
 
-        private IEnumerable<SingleField> FieldsFrom(CaptureDirection direction, int startRow, int startCol)
+
+        private IEnumerable<SingleField> PlayersDiscs(PlayerID playerID)
         {
-            switch (direction)
+            for (int row = 0; row < BoardSize; row++)
             {
-                case CaptureDirection.Up:
-                    return FieldsUpFrom(startRow, startCol);
-
-                case CaptureDirection.UpRight:
-                    return FieldsUpRightFrom(startRow, startCol);
-
-                case CaptureDirection.Right:
-                    return FieldsRightFrom(startRow, startCol);
-
-                case CaptureDirection.DownRight:
-                    return FieldsDownRightFrom(startRow, startCol);
-
-                case CaptureDirection.Down:
-                    return FieldsDownFrom(startRow, startCol);
-
-                case CaptureDirection.DownLeft:
-                    return FieldsDownLeftFrom(startRow, startCol);
-
-                case CaptureDirection.Left:
-                    return FieldsLeftFrom(startRow, startCol);
-
-                case CaptureDirection.UpLeft:
-                    return FieldsUpLeftFrom(startRow, startCol);
-
-                default:
-                    throw new ArgumentException("Unknown direction");
+                for (int col = 0; col < BoardSize; col++)
+                {
+                    if (fields[row, col] == (Field)playerID)
+                        yield return new SingleField(row, col, (Field)playerID);
+                }
             }
         }
+
+        private IEnumerable<SingleField> FieldsFrom(CaptureDirection direction, int startRow, int startCol)
+        {
+            return direction switch
+            {
+                CaptureDirection.Up => FieldsUpFrom(startRow, startCol),
+                CaptureDirection.UpRight => FieldsUpRightFrom(startRow, startCol),
+                CaptureDirection.Right => FieldsRightFrom(startRow, startCol),
+                CaptureDirection.DownRight => FieldsDownRightFrom(startRow, startCol),
+                CaptureDirection.Down => FieldsDownFrom(startRow, startCol),
+                CaptureDirection.DownLeft => FieldsDownLeftFrom(startRow, startCol),
+                CaptureDirection.Left => FieldsLeftFrom(startRow, startCol),
+                CaptureDirection.UpLeft => FieldsUpLeftFrom(startRow, startCol),
+                _ => throw new ArgumentException("Unknown direction"),
+            };
+        }
+
+        private IEnumerable<SingleField> FieldsFrom(CaptureDirection direction, SingleField field)
+            => FieldsFrom(direction, field.Row, field.Col);
 
         private IEnumerable<SingleField> FieldsUpFrom(int startRow, int startCol)
         {

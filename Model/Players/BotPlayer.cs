@@ -13,7 +13,7 @@ namespace Othello_for_three_players.Model.Players
         }
         public override (Move move,bool wasMade) MakeMoveOnlyForTesting(Board board)
         {
-            var possible = board.GenerateAllPossibleMoves(ID);
+            var possible = board.GeneratePossibleMoves(ID);
             if(possible != null && possible.Count !=0) {return (possible[0],true); }
             return (new Move(ID,0,0),false);
         }
@@ -34,7 +34,7 @@ namespace Othello_for_three_players.Model.Players
             }
 
             // nonterminal
-            List<Move> possibleMoves = board.GenerateAllPossibleMoves(playerID);
+            List<Move> possibleMoves = board.GeneratePossibleMoves(playerID);
             PlayerID nextPlayerID = GetNextPlayersID(playerID);
 
             Board firstChildBoard = Board.FromMove(possibleMoves.FirstOrDefault(), board);
