@@ -116,6 +116,43 @@ namespace Othello_for_three_players.Model
             return result.ToList();
         }
 
+        public List<KeyValuePair<Move, int>> GeneratePossibleMovesWithCaptures(PlayerID playerID)
+        {
+            Dictionary<Move, int> result = new Dictionary<Move, int>();
+
+            foreach (var field in PlayersDiscs(playerID))
+            {
+                foreach (var direction in Enum.GetValues<CaptureDirection>())
+                {
+                    int captures = 0;
+
+                    foreach (var potentialMove in FieldsFrom(direction, field))
+                    {
+                        if (potentialMove.Value == (Field)playerID)
+                            break;
+
+                        if (potentialMove.Value != Field.Empty)
+                            captures++;
+                        else
+                        {
+                            if (captures > 0)
+                            {
+                                Move move = new Move(playerID, potentialMove.Row, potentialMove.Col);
+
+                                if (result.ContainsKey(move))
+                                    result[move] += captures;
+                                else
+                                    result.Add(move, captures);
+                            }
+
+                        }
+                    }
+                }
+            }
+
+            return result.ToList();
+        }
+
         public void StartingPosition()
         {
             Clear();
