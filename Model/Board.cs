@@ -216,35 +216,18 @@ namespace Othello_for_three_players.Model
 
         private IEnumerable<SingleField> FieldsFrom(CaptureDirection direction, int startRow, int startCol)
         {
-            switch (direction)
+            return direction switch
             {
-                case CaptureDirection.Up:
-                    return FieldsUpFrom(startRow, startCol);
-
-                case CaptureDirection.UpRight:
-                    return FieldsUpRightFrom(startRow, startCol);
-
-                case CaptureDirection.Right:
-                    return FieldsRightFrom(startRow, startCol);
-
-                case CaptureDirection.DownRight:
-                    return FieldsDownRightFrom(startRow, startCol);
-
-                case CaptureDirection.Down:
-                    return FieldsDownFrom(startRow, startCol);
-
-                case CaptureDirection.DownLeft:
-                    return FieldsDownLeftFrom(startRow, startCol);
-
-                case CaptureDirection.Left:
-                    return FieldsLeftFrom(startRow, startCol);
-
-                case CaptureDirection.UpLeft:
-                    return FieldsUpLeftFrom(startRow, startCol);
-
-                default:
-                    throw new ArgumentException("Unknown direction");
-            }
+                CaptureDirection.Up => FieldsUpFrom(startRow, startCol),
+                CaptureDirection.UpRight => FieldsUpRightFrom(startRow, startCol),
+                CaptureDirection.Right => FieldsRightFrom(startRow, startCol),
+                CaptureDirection.DownRight => FieldsDownRightFrom(startRow, startCol),
+                CaptureDirection.Down => FieldsDownFrom(startRow, startCol),
+                CaptureDirection.DownLeft => FieldsDownLeftFrom(startRow, startCol),
+                CaptureDirection.Left => FieldsLeftFrom(startRow, startCol),
+                CaptureDirection.UpLeft => FieldsUpLeftFrom(startRow, startCol),
+                _ => throw new ArgumentException("Unknown direction"),
+            };
         }
 
         private IEnumerable<SingleField> FieldsFrom(CaptureDirection direction, SingleField field)
