@@ -29,7 +29,7 @@ namespace Othello_for_three_players.Model.Players
             }
 
             // nonterminal
-            List<Move> possibleMoves = board.GenerateAllPossibleMoves(playerID);
+            List<Move> possibleMoves = board.GeneratePossibleMoves(playerID);
             PlayerID nextPlayerID = GetNextPlayersID(playerID);
 
             Board firstChildBoard = Board.FromMove(possibleMoves.FirstOrDefault(), board);
