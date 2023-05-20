@@ -28,6 +28,14 @@ namespace Othello_for_three_players.Model
             fields = new Field[BoardSize, BoardSize];
         }
 
+        public static Board FromMove(Move move, Board board)
+        {
+            Board newBoard = (Board)board.Clone();
+            newBoard.MakeMove(move);
+
+            return newBoard;
+        }
+
         public void MakeMove(Move move)
         {
             if (fields[move.Row, move.Column] != Field.Empty)
@@ -78,9 +86,71 @@ namespace Othello_for_three_players.Model
             }
         }
 
-        public List<Move> GenerateAllPossibleMoves(PlayerID playerID)
+        public List<Move> GeneratePossibleMoves(PlayerID playerID)
         {
-            throw new NotImplementedException();
+            HashSet<Move> result = new HashSet<Move>();
+
+            foreach (var field in PlayersDiscs(playerID))
+            {
+                foreach (var direction in Enum.GetValues<CaptureDirection>())
+                {
+                    bool enemyDiscFound = false;
+
+                    foreach (var potentialMove in FieldsFrom(direction, field))
+                    {
+                        if (potentialMove.Value == (Field)playerID)
+                            break;
+
+                        if (potentialMove.Value != Field.Empty)
+                            enemyDiscFound = true;
+                        else
+                        {
+                            if (enemyDiscFound)
+                                result.Add(new Move(playerID, potentialMove.Row, potentialMove.Col));
+                            break;
+                        }
+                    }
+                }
+            }
+
+            return result.ToList();
+        }
+
+        public List<KeyValuePair<Move, int>> GeneratePossibleMovesWithCaptures(PlayerID playerID)
+        {
+            Dictionary<Move, int> result = new Dictionary<Move, int>();
+
+            foreach (var field in PlayersDiscs(playerID))
+            {
+                foreach (var direction in Enum.GetValues<CaptureDirection>())
+                {
+                    int captures = 0;
+
+                    foreach (var potentialMove in FieldsFrom(direction, field))
+                    {
+                        if (potentialMove.Value == (Field)playerID)
+                            break;
+
+                        if (potentialMove.Value != Field.Empty)
+                            captures++;
+                        else
+                        {
+                            if (captures > 0)
+                            {
+                                Move move = new Move(playerID, potentialMove.Row, potentialMove.Col);
+
+                                if (result.ContainsKey(move))
+                                    result[move] += captures;
+                                else
+                                    result.Add(move, captures);
+                            }
+
+                        }
+                    }
+                }
+            }
+
+            return result.ToList();
         }
 
         public void StartingPosition()
@@ -101,14 +171,6 @@ namespace Othello_for_three_players.Model
             fields[4, 3] = Field.Player3Disc;
             fields[5, 4] = Field.Player3Disc;
             fields[3, 5] = Field.Player3Disc;
-        }
-
-        public static Board FromMove(Move move, Board board)
-        {
-            Board newBoard = (Board)board.Clone();
-            newBoard.MakeMove(move);
-            
-            return newBoard;
         }
 
         public object Clone()
@@ -137,6 +199,19 @@ namespace Othello_for_three_players.Model
             DownLeft,
             Left,
             UpLeft
+        }
+
+
+        private IEnumerable<SingleField> PlayersDiscs(PlayerID playerID)
+        {
+            for (int row = 0; row < BoardSize; row++)
+            {
+                for (int col = 0; col < BoardSize; col++)
+                {
+                    if (fields[row, col] == (Field)playerID)
+                        yield return new SingleField(row, col, (Field)playerID);
+                }
+            }
         }
 
         private IEnumerable<SingleField> FieldsFrom(CaptureDirection direction, int startRow, int startCol)
@@ -171,6 +246,9 @@ namespace Othello_for_three_players.Model
                     throw new ArgumentException("Unknown direction");
             }
         }
+
+        private IEnumerable<SingleField> FieldsFrom(CaptureDirection direction, SingleField field)
+            => FieldsFrom(direction, field.Row, field.Col);
 
         private IEnumerable<SingleField> FieldsUpFrom(int startRow, int startCol)
         {
