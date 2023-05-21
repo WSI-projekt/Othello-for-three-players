@@ -251,13 +251,6 @@ namespace Othello_for_three_players.Model
 
         private IEnumerable<SingleField> FieldsUpRightFrom(int startRow, int startCol)
         {
-            /*for (int row = startRow - 1; row >= 0; row--)
-            {
-                for (int col = startCol + 1; col < startCol; col++)
-                {
-                    yield return new SingleField(row, col, fields[row, col]);
-                }
-            }*/
             for(int i = 1; startRow-i >=0 && startCol + i < Size; i++)
             {
                 yield return new SingleField(startRow - i, startCol + i, fields[startRow - i, startCol+i]);
@@ -274,13 +267,6 @@ namespace Othello_for_three_players.Model
 
         private IEnumerable<SingleField> FieldsDownRightFrom(int startRow, int startCol)
         {
-            /*for (int row = startRow + 1; row < BoardSize; row++)
-            {
-                for (int col = startCol + 1; col < BoardSize; col++)
-                {
-                    yield return new SingleField(row, col, fields[row, col]);
-                }
-            }*/
             for (int i = 1; startRow + i < Size && startCol + i < Size; i++)
             {
                 yield return new SingleField(startRow + i, startCol + i, fields[startRow + i, startCol + i]);
@@ -297,13 +283,6 @@ namespace Othello_for_three_players.Model
 
         private IEnumerable<SingleField> FieldsDownLeftFrom(int startRow, int startCol)
         {
-            /*for (int row = startRow + 1; row < BoardSize; row++)
-            {
-                for (int col = startCol - 1; col >= 0; col--)
-                {
-                    yield return new SingleField(row, col, fields[row, col]);
-                }
-            }*/
             for (int i = 1; startRow + i <Size && startCol - i >= 0; i++)
             {
                 yield return new SingleField(startRow + i, startCol - i, fields[startRow + i, startCol - i]);
@@ -320,13 +299,6 @@ namespace Othello_for_three_players.Model
 
         private IEnumerable<SingleField> FieldsUpLeftFrom(int startRow, int startCol)
         {
-            /*for (int row = startRow - 1; row >= 0; row--)
-            {
-                for (int col = startCol - 1; col >= 0; col--)
-                {
-                    yield return new SingleField(row, col, fields[row, col]);
-                }
-            }*/
             for (int i = 1; startRow - i >= 0 && startCol - i >=0; i++)
             {
                 yield return new SingleField(startRow - i, startCol - i, fields[startRow - i, startCol - i]);
