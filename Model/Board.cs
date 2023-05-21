@@ -63,9 +63,10 @@ namespace Othello_for_three_players.Model
                         tmpFields.Enqueue((field.Row, field.Col));
                     }
                 }
+                tmpFields.Clear();
             }
 
-            if (fieldsToChange.Count == 1)
+            if (fieldsToChange.Count == 0)
                 throw new ArgumentException("No captures after move - move is invalid");
 
             while(fieldsToChange.Count > 0)
@@ -73,6 +74,7 @@ namespace Othello_for_three_players.Model
                 (int row, int col) = fieldsToChange.Dequeue();
                 fields[row, col] = (Field)move.Player;
             }
+            fields[move.Row, move.Column] = (Field)move.Player;
         }
 
         public void Clear()
@@ -243,12 +245,16 @@ namespace Othello_for_three_players.Model
 
         private IEnumerable<SingleField> FieldsUpRightFrom(int startRow, int startCol)
         {
-            for (int row = startRow - 1; row >= 0; row--)
+            /*for (int row = startRow - 1; row >= 0; row--)
             {
                 for (int col = startCol + 1; col < startCol; col++)
                 {
                     yield return new SingleField(row, col, fields[row, col]);
                 }
+            }*/
+            for(int i = 1; startRow-i >=0 && startCol + i < BoardSize; i++)
+            {
+                yield return new SingleField(startRow - i, startCol + i, fields[startRow - i, startCol+i]);
             }
         }
 
@@ -256,18 +262,22 @@ namespace Othello_for_three_players.Model
         {
             for (int col = startCol + 1; col < BoardSize; col++)
             {
-                yield return new SingleField(col, startCol, fields[col, startCol]);
+                yield return new SingleField(startRow, col, fields[startRow, col]);
             }
         }
 
         private IEnumerable<SingleField> FieldsDownRightFrom(int startRow, int startCol)
         {
-            for (int row = startRow + 1; row < BoardSize; row++)
+            /*for (int row = startRow + 1; row < BoardSize; row++)
             {
                 for (int col = startCol + 1; col < BoardSize; col++)
                 {
                     yield return new SingleField(row, col, fields[row, col]);
                 }
+            }*/
+            for (int i = 1; startRow + i < BoardSize && startCol + i < BoardSize; i++)
+            {
+                yield return new SingleField(startRow + i, startCol + i, fields[startRow + i, startCol + i]);
             }
         }
 
@@ -281,12 +291,16 @@ namespace Othello_for_three_players.Model
 
         private IEnumerable<SingleField> FieldsDownLeftFrom(int startRow, int startCol)
         {
-            for (int row = startRow + 1; row < BoardSize; row++)
+            /*for (int row = startRow + 1; row < BoardSize; row++)
             {
                 for (int col = startCol - 1; col >= 0; col--)
                 {
                     yield return new SingleField(row, col, fields[row, col]);
                 }
+            }*/
+            for (int i = 1; startRow + i <BoardSize && startCol - i >= 0; i++)
+            {
+                yield return new SingleField(startRow + i, startCol - i, fields[startRow + i, startCol - i]);
             }
         }
 
@@ -300,12 +314,16 @@ namespace Othello_for_three_players.Model
 
         private IEnumerable<SingleField> FieldsUpLeftFrom(int startRow, int startCol)
         {
-            for (int row = startRow - 1; row >= 0; row--)
+            /*for (int row = startRow - 1; row >= 0; row--)
             {
                 for (int col = startCol - 1; col >= 0; col--)
                 {
                     yield return new SingleField(row, col, fields[row, col]);
                 }
+            }*/
+            for (int i = 1; startRow - i >= 0 && startCol - i >=0; i++)
+            {
+                yield return new SingleField(startRow - i, startCol - i, fields[startRow - i, startCol - i]);
             }
         }
 

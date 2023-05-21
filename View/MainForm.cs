@@ -25,6 +25,7 @@ namespace Othello_for_three_players
         public MainForm()
         {
             InitializeComponent();
+            // I have no idea how to pass GameEventHandler
             BlackDisks1 = CreateBrushSet(new Point(75, 0), new Point(0, 75),
                 Color.FromArgb(49, 49, 49), Color.FromArgb(59, 59, 59),
                 Color.FromArgb(48, 48, 48), Color.FromArgb(8, 8, 8),
@@ -50,7 +51,16 @@ namespace Othello_for_three_players
                 Color.FromArgb(210, 210, 210), Color.FromArgb(140, 140, 140),
                 Color.FromArgb(210, 210, 210), Color.FromArgb(215, 215, 215));
             NewDrawArea(681, 681);
-            // TODO: initialize game controller
+            gameController = new GameController(new BotPlayer(PlayerID.Player1, 3, 10),
+                new BotPlayer(PlayerID.Player2, 3, 10),
+                new BotPlayer(PlayerID.Player3, 3, 10),
+                null, this);
+            gameController.PrepareBoard();
+            timer1.Start();
+        }
+        public bool IsAnimationDone()
+        {
+            return BackWork.IsBusy;
         }
         public List<LinearGradientBrush> CreateBrushSet(Point begin, Point end, Color first, Color second, Color third, Color fourth, Color fifth, Color sixth)
         {
@@ -101,16 +111,30 @@ namespace Othello_for_three_players
             // TODO: Make move action on view
             throw new NotImplementedException();
         }*/
-        private void MakeMove(Board board, PlayerID ID, Move move, Queue<(int row, int col)> fieldsToFlip)
+        public void MakeMove(Board board, Board beforemove, Move move)
         {
-            // TODO: Make move action on view
-            this.board = board;
-            this.playerID = ID;
-            this.move = move;
-            this.fieldsToFlip = fieldsToFlip;
+            // You call this function from controller to visualise the move that is made
+            // board - the state of the board after the move was made
+            // beforemove - the state of the board before the move was made
+            // both boards are used to draw disks lying on the board and determine which ones are meant to be flipped
+            // move - the move made
             if (BackWork.IsBusy != true)
             {
                 // Start the asynchronous operation.
+                this.board = board;
+                this.playerID = move.Player;
+                this.move = move;
+                this.fieldsToFlip = new Queue<(int row, int col)>();
+                for (int i = 0; i < 9; i++)
+                {
+                    for (int j = 0; j < 9; j++)
+                    {
+                        if (beforemove[i, j] != board[i, j] && (move.Row, move.Column) != (i, j))
+                        {
+                            fieldsToFlip.Enqueue((i, j));
+                        }
+                    }
+                }
                 BackWork.RunWorkerAsync();
             }
 
@@ -120,6 +144,12 @@ namespace Othello_for_three_players
         {
             throw new NotImplementedException();
         }
+        public void DrawDisksOnBoard_GameController(Board board, Queue<(int row, int col)> fieldsToChange)
+        {
+            // this function is called from PrepareBoard method in game controller
+            // it draws starting position of the game
+            DrawDisksOnBoard(Graphics.FromImage(gameBoard), board, fieldsToChange);
+        }
         private void NewDrawArea(int w, int h)
         {
             //creates new bitmap, draws board and starting position
@@ -127,9 +157,9 @@ namespace Othello_for_three_players
             gameBoard = new Bitmap(w, h);
             Canvas.Image = gameBoard;
             DrawBoard(Graphics.FromImage(gameBoard));
-            Board board = new Board();
-            board.StartingPosition();
-            DrawDisksOnBoard(Graphics.FromImage(gameBoard), board, new Queue<(int row, int col)>());
+            // Board board = new Board();
+            // board.StartingPosition();
+
         }
         private void DrawDisksOnBoard(Graphics g, Board board, Queue<(int row, int col)> fieldsToChange)
         {
@@ -174,7 +204,7 @@ namespace Othello_for_three_players
             for (int i = 10; i >= 0; i--)
             {
                 DrawScaleDisk(g, ChooseBrushes((int)playerID, move.Row % 2 == move.Column % 2), move.Row, move.Column, 1 + i * 0.1);
-                Canvas.Refresh();
+                //  Canvas.Refresh();
                 Thread.Sleep(20);
             }
         }
@@ -200,7 +230,7 @@ namespace Othello_for_three_players
                     DrawField(g, field.row, field.col);
                     DrawFlippedDiskOut(g, ChooseBrushes((int)board[field.row, field.col], field.row % 2 == field.col % 2), field.row, field.col, s, wid);
                 }
-                Canvas.Refresh();
+                //  Canvas.Refresh();
                 Thread.Sleep(25);
             }
             foreach (var field in fieldsToChange)
@@ -208,7 +238,7 @@ namespace Othello_for_three_players
                 DrawField(g, field.row, field.col);
                 g.FillRectangle(Brushes.DarkOrange, 5 + field.col * 75, 5 + field.row * 75 + 35 - wid + wid / 2, 70, wid);
             }
-            Canvas.Refresh();
+            // Canvas.Refresh();
             Thread.Sleep(5);
             for (int i = 11; i >= 0; i--)
             {
@@ -219,7 +249,7 @@ namespace Othello_for_three_players
                     DrawField(g, field.row, field.col);
                     DrawFlippedDiskIn(g, ChooseBrushes((int)playerID, field.row % 2 == field.col % 2), field.row, field.col, s, wid);
                 }
-                Canvas.Refresh();
+                //   Canvas.Refresh();
                 Thread.Sleep(25);
             }
         }
@@ -257,18 +287,13 @@ namespace Othello_for_three_players
 
         private void Test_Click(object sender, EventArgs e)
         {
-            Board board = new Board();
-            board.StartingPosition();
-            Move move = new Move(PlayerID.Player1, 2, 5);
-            Queue<(int row, int col)> q = new Queue<(int row, int col)>();
-            q.Enqueue((3, 5));
-            q.Enqueue((4, 5));
-            MakeMove(board, PlayerID.Player1, move, q);
-            Test.Enabled = false;
+            // this was used to test a single animation, it wont be needed anymore
         }
 
         private void BackWork_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
+            // the animations are run using BackgroundWorker
+            // this method calls all function necessary to draw everything
             DrawBoard(Graphics.FromImage(gameBoard));
             DrawDisksOnBoard(Graphics.FromImage(gameBoard), board, new Queue<(int row, int col)>());
             DrawPlaceDisk(Graphics.FromImage(gameBoard), move, playerID);
@@ -278,16 +303,42 @@ namespace Othello_for_three_players
 
         private void BackWork_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
-            Test.Enabled = true;
+            // Test.Enabled = true;
         }
 
         private void StartSimulation_Click(object sender, EventArgs e)
         {
             //start game simulation on click
-            //TODO: implement game simulation
+            // the game controller's simulation is run using Background worker as well (otherwise the animation didn't show)
+            // method starts the work in the backgroungd - see BackgroundGame_DoWork
+
             Test.Enabled = false;
             StartSimulation.Enabled = false;
+            BackgroundGame.RunWorkerAsync();
 
+        }
+
+        private void BackgroundGame_DoWork(object sender, DoWorkEventArgs e)
+        {
+            // start the simulation
+            // TestThreeMoves was a method that initially made only three moves at a time
+            // it is now a simulation of the game where the players place disks in the first place they find
+            gameController.TestThreeMoves();
+        }
+
+        private void BackgroundGame_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            StartSimulation.Enabled = true;
+        }
+
+        private void BackWork_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            Canvas.Refresh();
         }
     }
 }

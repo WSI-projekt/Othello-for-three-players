@@ -11,7 +11,12 @@ namespace Othello_for_three_players.Model.Players
             RecurencyDepth = recurencyDepth;
             HeuristicsUpperSumBound = upperSumBound;
         }
-
+        public override (Move move,bool wasMade) MakeMoveOnlyForTesting(Board board)
+        {
+            var possible = board.GeneratePossibleMoves(ID);
+            if(possible != null && possible.Count !=0) {return (possible[0],true); }
+            return (new Move(ID,0,0),false);
+        }
         public override Move MakeMove(Board board)
         {
             return Shallow(board, ID, HeuristicsUpperSumBound, 0).PlayersMove;
