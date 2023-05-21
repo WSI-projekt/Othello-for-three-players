@@ -2,7 +2,7 @@
 
 namespace Othello_for_three_players.Model
 {
-    public readonly struct Move
+    public readonly struct Move: IEquatable<Move>
     {
         public int Row { get; }
         public int Column { get; }
@@ -20,8 +20,14 @@ namespace Othello_for_three_players.Model
 
         private static bool Validate(int row, int col)
         {
-            return 0 <= row && row <= Board.BoardSize &&
-                   0 <= col && row <= Board.BoardSize;
+            return 0 <= row && row <= Board.Size &&
+                   0 <= col && row <= Board.Size;
         }
+
+        public bool Equals(Move other)
+            => Row == other.Row && Column == other.Column && Player == other.Player;
+
+        public override string ToString()
+            => $"Player {(int)Player}, Row: {Row}, Column: {Column}";
     }
 }
