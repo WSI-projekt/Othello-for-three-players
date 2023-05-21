@@ -13,7 +13,7 @@ namespace Othello_for_three_players.Model
 
     public class Board: ICloneable
     {
-        public const int BoardSize = 9;
+        public const int Size = 9;
 
         private Field[,] fields;
 
@@ -25,7 +25,7 @@ namespace Othello_for_three_players.Model
             // No need to clean the board, because default
             // value of enum is 0
 
-            fields = new Field[BoardSize, BoardSize];
+            fields = new Field[Size, Size];
         }
 
         public static Board FromMove(Move move, Board board)
@@ -79,9 +79,9 @@ namespace Othello_for_three_players.Model
 
         public void Clear()
         {
-            for (int row = 0; row < BoardSize; row++)
+            for (int row = 0; row < Size; row++)
             {
-                for (int col = 0; col < BoardSize; col++)
+                for (int col = 0; col < Size; col++)
                 {
                     fields[row, col] = Field.Empty;
                 }
@@ -140,19 +140,25 @@ namespace Othello_for_three_players.Model
                             if (captures > 0)
                             {
                                 Move move = new Move(playerID, potentialMove.Row, potentialMove.Col);
-
-                                if (result.ContainsKey(move))
-                                    result[move] += captures;
-                                else
-                                    result.Add(move, captures);
+                                UpdateCaptures(result, move, captures);
                             }
-
+                            break;
                         }
+                        
                     }
                 }
             }
 
             return result.ToList();
+        }
+
+        private void UpdateCaptures(Dictionary<Move,int> captures, Move move, int newCaptures)
+        {
+            if (captures.ContainsKey(move))
+                captures[move] += newCaptures;
+            else
+                captures.Add(move, newCaptures);
+
         }
 
         public void StartingPosition()
@@ -179,9 +185,9 @@ namespace Othello_for_three_players.Model
         {
             Board result = new Board();
 
-            for (int row = 0; row < BoardSize; row++)
+            for (int row = 0; row < Size; row++)
             {
-                for (int col = 0; col < BoardSize; col++)
+                for (int col = 0; col < Size; col++)
                 {
                     result.fields[row, col] = fields[row, col];
                 }
@@ -206,9 +212,9 @@ namespace Othello_for_three_players.Model
 
         private IEnumerable<SingleField> PlayersDiscs(PlayerID playerID)
         {
-            for (int row = 0; row < BoardSize; row++)
+            for (int row = 0; row < Size; row++)
             {
-                for (int col = 0; col < BoardSize; col++)
+                for (int col = 0; col < Size; col++)
                 {
                     if (fields[row, col] == (Field)playerID)
                         yield return new SingleField(row, col, (Field)playerID);
@@ -252,7 +258,7 @@ namespace Othello_for_three_players.Model
                     yield return new SingleField(row, col, fields[row, col]);
                 }
             }*/
-            for(int i = 1; startRow-i >=0 && startCol + i < BoardSize; i++)
+            for(int i = 1; startRow-i >=0 && startCol + i < Size; i++)
             {
                 yield return new SingleField(startRow - i, startCol + i, fields[startRow - i, startCol+i]);
             }
@@ -260,7 +266,7 @@ namespace Othello_for_three_players.Model
 
         private IEnumerable<SingleField> FieldsRightFrom(int startRow, int startCol)
         {
-            for (int col = startCol + 1; col < BoardSize; col++)
+            for (int col = startCol + 1; col < Size; col++)
             {
                 yield return new SingleField(startRow, col, fields[startRow, col]);
             }
@@ -275,7 +281,7 @@ namespace Othello_for_three_players.Model
                     yield return new SingleField(row, col, fields[row, col]);
                 }
             }*/
-            for (int i = 1; startRow + i < BoardSize && startCol + i < BoardSize; i++)
+            for (int i = 1; startRow + i < Size && startCol + i < Size; i++)
             {
                 yield return new SingleField(startRow + i, startCol + i, fields[startRow + i, startCol + i]);
             }
@@ -283,7 +289,7 @@ namespace Othello_for_three_players.Model
 
         private IEnumerable<SingleField> FieldsDownFrom(int startRow, int startCol)
         {
-            for (int row = startRow + 1; row < BoardSize; row++)
+            for (int row = startRow + 1; row < Size; row++)
             {
                 yield return new SingleField(row, startCol, fields[row, startCol]);
             }
@@ -298,7 +304,7 @@ namespace Othello_for_three_players.Model
                     yield return new SingleField(row, col, fields[row, col]);
                 }
             }*/
-            for (int i = 1; startRow + i <BoardSize && startCol - i >= 0; i++)
+            for (int i = 1; startRow + i <Size && startCol - i >= 0; i++)
             {
                 yield return new SingleField(startRow + i, startCol - i, fields[startRow + i, startCol - i]);
             }
@@ -335,9 +341,19 @@ namespace Othello_for_three_players.Model
 
             public SingleField(int row, int col, Field field)
             {
-                this.Row = row;
-                this.Col = col;
-                this.Value = field;
+                Row = row;
+                Col = col;
+                Value = field;
+            }
+
+            public override string ToString()
+            {
+                string prefix = $"Field row: {Row}, col: {Col} ";
+
+                if (Value == Field.Empty)
+                    return prefix + "is empty";
+
+                return prefix + $"- player {(int)Value} dics";
             }
         }
     }
