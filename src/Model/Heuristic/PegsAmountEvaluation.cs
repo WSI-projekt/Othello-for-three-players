@@ -1,26 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Permissions;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Othello_for_three_players.Model.Heuristic
+﻿namespace Othello_for_three_players.Model.Heuristic
 {
-    internal class PegsAmountEvaluation : IEvaluation
+    public class PegsAmountEvaluation : IEvaluation
     {
         Board board;
 
         int[,] evaluationtab = new int[9, 9] {
-{4, -3, 2, 2, 2, 2, 2, -3, 4 },
-{ -3, -4, -1,-1, -1, -1, -1 ,-4, -3 },
-{ 2, -1, 1, 0,0, 0, 1, -1, 2 },
-{ 2, -1, 0, 1,1, 1, 0, -1, 2 },
-{ 2, -1, 0, 1,1, 1, 0, -1, 2 },
-{ 2,-1, 0, 1,1, 1, 0, -1, 2 },
-{ 2, -1, 1, 0,0, 0, 1, -1, 2 },
-{ -3, -4, -1, -1,-1, -1, -1, -4, -3 },
-{ 4, -3, 2, 2,2, 2, 2, -3, 4,}
+            {  4, -3,  2,  2,  2,  2,  2, -3,  4 },
+            { -3, -4, -1, -1, -1, -1, -1, -4, -3 },
+            {  2, -1,  1,  0,  0,  0,  1, -1,  2 },
+            {  2, -1,  0,  1,  1,  1,  0, -1,  2 },
+            {  2, -1,  0,  1,  1,  1,  0, -1,  2 },
+            {  2, -1,  0,  1,  1,  1,  0, -1,  2 },
+            {  2, -1,  1,  0,  0,  0,  1, -1,  2 },
+            { -3, -4, -1, -1, -1, -1, -1, -4, -3 },
+            {  4, -3,  2,  2,  2,  2,  2, -3,  4 },
         };
 
         public PegsAmountEvaluation(Board b)
@@ -31,9 +24,9 @@ namespace Othello_for_three_players.Model.Heuristic
         public override (double, double, double) Evaluate()
         {
             double[] tab = new double[3];
-            for(int i = 0; i < Board.BoardSize; i++)
+            for(int i = 0; i < Board.Size; i++)
             {
-                for(int j = 0; j < Board.BoardSize; j++)
+                for(int j = 0; j < Board.Size; j++)
                 {
                     int temp = (int)board[i,j] - 1;
                     if (temp != -1) { }

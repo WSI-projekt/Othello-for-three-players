@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Othello_for_three_players.Model.Heuristic
+﻿namespace Othello_for_three_players.Model.Heuristic
 {
-    internal class CornerEvaluation : IEvaluation
+    public class CornerEvaluation : IEvaluation
     {
-
         Board board;
 
         public CornerEvaluation(Board b)
@@ -24,15 +17,15 @@ namespace Othello_for_three_players.Model.Heuristic
             if(temp != -1) { }
             tab[temp]++;
 
-            temp = (int)board[Board.BoardSize - 1, 0] - 1;
+            temp = (int)board[Board.Size - 1, 0] - 1;
             if (temp != -1) { }
             tab[temp]++;
 
-            temp = (int)board[0, Board.BoardSize - 1] - 1;
+            temp = (int)board[0, Board.Size - 1] - 1;
             if (temp != -1) { }
             tab[temp]++;
 
-            temp = (int)board[Board.BoardSize - 1, Board.BoardSize - 1] - 1;
+            temp = (int)board[Board.Size - 1, Board.Size - 1] - 1;
             if (temp != -1) { }
             tab[temp]++;
 
