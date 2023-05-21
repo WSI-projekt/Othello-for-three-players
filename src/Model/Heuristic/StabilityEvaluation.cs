@@ -1,22 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Othello_for_three_players.Model.Heuristic
+﻿namespace Othello_for_three_players.Model.Heuristic
 {
-    internal class StabilityEvaluation : IEvaluation
+    public class StabilityEvaluation : IEvaluation
     {
+        Board board;
 
-        public StabilityEvaluation() { 
+        public StabilityEvaluation(Board board)
+        {
+            this.board = board;
         }
 
-        public override (double a, double b, double c) Evaluate(Board board)
+        public override (double a, double b, double c) Evaluate()
         {
             double[] tab = new double[2];
-
-            
 
             tab[0] = tab[0] - (tab[1] + tab[2]) / 2.0;
             tab[1] = tab[1] - (tab[0] + tab[2]) / 2.0;
