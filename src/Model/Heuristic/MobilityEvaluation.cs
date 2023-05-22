@@ -10,7 +10,7 @@
         }
         public override (double a, double b, double c) Evaluate()
         {
-            double[] tab = new double[2];
+            double[] tab = new double[3];
             tab[0] = board.GeneratePossibleMoves(Players.PlayerID.Player1).Count;
             tab[1] = board.GeneratePossibleMoves(Players.PlayerID.Player2).Count;
             tab[2] = board.GeneratePossibleMoves(Players.PlayerID.Player3).Count;

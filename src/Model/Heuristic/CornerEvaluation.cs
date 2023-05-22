@@ -11,7 +11,7 @@
 
         public override (double a, double b, double c) Evaluate()
         {
-            double[] tab = new double[2];
+            double[] tab = new double[3];
 
             int temp = (int)board[0, 0] - 1;
             if(temp != -1) { }
