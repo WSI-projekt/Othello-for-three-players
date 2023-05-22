@@ -47,7 +47,7 @@ namespace Othello_for_three_players.Controller
             //visualisation.MakeMove(board, PlayerID.Player2, move, q);
             while (visualisation.IsAnimationDone()) ;
         }
-        public void TestThreeMoves()
+        public void BotSimulation()
         {
             int turn = 1, unableToMove = 0;
             while(unableToMove < 3)  

@@ -28,16 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
             tableLayoutPanel1 = new TableLayoutPanel();
             panel1 = new Panel();
             Canvas = new PictureBox();
             groupBox1 = new GroupBox();
             StartSimulation = new Button();
-            Test = new Button();
             BackWork = new System.ComponentModel.BackgroundWorker();
             BackgroundGame = new System.ComponentModel.BackgroundWorker();
-            timer1 = new System.Windows.Forms.Timer(components);
             tableLayoutPanel1.SuspendLayout();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)Canvas).BeginInit();
@@ -83,7 +80,6 @@
             // groupBox1
             // 
             groupBox1.Controls.Add(StartSimulation);
-            groupBox1.Controls.Add(Test);
             groupBox1.Dock = DockStyle.Fill;
             groupBox1.Location = new Point(1035, 3);
             groupBox1.Name = "groupBox1";
@@ -93,7 +89,7 @@
             // 
             // StartSimulation
             // 
-            StartSimulation.Location = new Point(3, 44);
+            StartSimulation.Location = new Point(3, 9);
             StartSimulation.Name = "StartSimulation";
             StartSimulation.Size = new Size(135, 29);
             StartSimulation.TabIndex = 3;
@@ -101,31 +97,14 @@
             StartSimulation.UseVisualStyleBackColor = true;
             StartSimulation.Click += StartSimulation_Click;
             // 
-            // Test
-            // 
-            Test.Location = new Point(3, 9);
-            Test.Name = "Test";
-            Test.Size = new Size(135, 29);
-            Test.TabIndex = 2;
-            Test.Text = "AnimationTest";
-            Test.UseVisualStyleBackColor = true;
-            Test.Click += Test_Click;
-            // 
             // BackWork
             // 
             BackWork.DoWork += BackWork_DoWork;
-            BackWork.ProgressChanged += BackWork_ProgressChanged;
-            BackWork.RunWorkerCompleted += BackWork_RunWorkerCompleted;
             // 
             // BackgroundGame
             // 
             BackgroundGame.DoWork += BackgroundGame_DoWork;
             BackgroundGame.RunWorkerCompleted += BackgroundGame_RunWorkerCompleted;
-            // 
-            // timer1
-            // 
-            timer1.Interval = 50;
-            timer1.Tick += timer1_Tick;
             // 
             // MainForm
             // 
@@ -149,9 +128,7 @@
         private PictureBox Canvas;
         private System.ComponentModel.BackgroundWorker BackWork;
         private GroupBox groupBox1;
-        private Button Test;
         private Button StartSimulation;
         private System.ComponentModel.BackgroundWorker BackgroundGame;
-        private System.Windows.Forms.Timer timer1;
     }
 }
