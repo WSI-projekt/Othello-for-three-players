@@ -8,11 +8,12 @@ namespace Othello_for_three_players.Model.Heuristic
 {
     internal class StabilityEvaluation : IEvaluation
     {
-
-        public StabilityEvaluation() { 
+        Board board;
+        public StabilityEvaluation(Board b) {
+            board = b;
         }
 
-        public override (double a, double b, double c) Evaluate(Board board)
+        public override (double, double, double) Evaluate()
         {
             double[] tab = new double[2];
 

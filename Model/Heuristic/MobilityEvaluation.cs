@@ -14,7 +14,7 @@ namespace Othello_for_three_players.Model.Heuristic
         {
             this.board = board;
         }
-        public override (double a, double b, double c) Evaluate()
+        public override (double, double, double) Evaluate()
         {
             double[] tab = new double[2];
             tab[0] = board.GenerateAllPossibleMoves(Players.PlayerID.Player1).Count;
