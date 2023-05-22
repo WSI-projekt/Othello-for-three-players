@@ -54,7 +54,7 @@ namespace Othello_for_three_players
             gameController = new GameController(new BotPlayer(PlayerID.Player1, 3, 10),
                 new BotPlayer(PlayerID.Player2, 3, 10),
                 new BotPlayer(PlayerID.Player3, 3, 10),
-                null, this); 
+                null, this);
             gameController.PrepareBoard();
         }
         public bool IsAnimationDone()
@@ -276,7 +276,21 @@ namespace Othello_for_three_players
             g.FillEllipse(diskBrushes[2], (float)(5 + 8.25 + col * 75), (float)(5 + 9.25 + row * 75 + off4) - offw, 52, s4);
         }
 
-
+        public void ShowStats((int black, int white, int red) stats)
+        {
+            black.Invoke(new Action(delegate ()
+            {
+                black.Text = "Black: " + stats.black.ToString();
+            }));
+            red.Invoke(new Action(delegate ()
+            {
+                red.Text = "Red: " + stats.red.ToString();
+            }));
+            white.Invoke(new Action(delegate ()
+            {
+                white.Text = "White: " + stats.white.ToString();
+            }));
+        }
         private void BackWork_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
             // the animations are run using BackgroundWorker
@@ -307,9 +321,17 @@ namespace Othello_for_three_players
 
         private void BackgroundGame_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            StartSimulation.Enabled = true;
+            //StartSimulation.Enabled = true;
+            Reset.Enabled = true;
         }
 
-
+        private void Reset_Click(object sender, EventArgs e)
+        {
+            DrawBoard(Graphics.FromImage(gameBoard));
+            gameController.PrepareBoard();
+            StartSimulation.Enabled = true;
+            Reset.Enabled = false;
+            Canvas.Refresh();
+        }
     }
 }

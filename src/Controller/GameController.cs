@@ -65,6 +65,7 @@ namespace Othello_for_three_players.Controller
                 visualisation.MakeMove(board, boardcopy, move.move);
                 while (visualisation.IsAnimationDone()) ;
                 board.MakeMove(move.move);
+                visualisation.ShowStats(board.PlayerStats());
                 unableToMove = 0;
             }
         }
