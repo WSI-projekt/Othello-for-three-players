@@ -56,7 +56,7 @@ namespace Othello_for_three_players
                 new BotPlayer(PlayerID.Player3, 3, 10),
                 null, this); // TODO - check if the upper sum in heuristics == 10??
             gameController.PrepareBoard();
-            timer1.Start();
+           // timer1.Start();
         }
         public bool IsAnimationDone()
         {
@@ -205,6 +205,7 @@ namespace Othello_for_three_players
             {
                 DrawScaleDisk(g, ChooseBrushes((int)playerID, move.Row % 2 == move.Column % 2), move.Row, move.Column, 1 + i * 0.1);
                 //  Canvas.Refresh();
+                Canvas.Invoke(new Action(Canvas.Refresh));
                 Thread.Sleep(20);
             }
         }
@@ -231,6 +232,7 @@ namespace Othello_for_three_players
                     DrawFlippedDiskOut(g, ChooseBrushes((int)board[field.row, field.col], field.row % 2 == field.col % 2), field.row, field.col, s, wid);
                 }
                 //  Canvas.Refresh();
+                Canvas.Invoke(new Action(Canvas.Refresh));
                 Thread.Sleep(25);
             }
             foreach (var field in fieldsToChange)
@@ -239,6 +241,7 @@ namespace Othello_for_three_players
                 g.FillRectangle(Brushes.DarkOrange, 5 + field.col * 75, 5 + field.row * 75 + 35 - wid + wid / 2, 70, wid);
             }
             // Canvas.Refresh();
+            Canvas.Invoke(new Action(Canvas.Refresh));
             Thread.Sleep(5);
             for (int i = 11; i >= 0; i--)
             {
@@ -250,6 +253,7 @@ namespace Othello_for_three_players
                     DrawFlippedDiskIn(g, ChooseBrushes((int)playerID, field.row % 2 == field.col % 2), field.row, field.col, s, wid);
                 }
                 //   Canvas.Refresh();
+                Canvas.Invoke(new Action(Canvas.Refresh));
                 Thread.Sleep(25);
             }
         }
