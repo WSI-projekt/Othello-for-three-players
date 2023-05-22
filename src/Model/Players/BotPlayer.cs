@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using Othello_for_three_players.Model.Heuristic;
+using System.Numerics;
 
 namespace Othello_for_three_players.Model.Players
 {
@@ -29,7 +30,7 @@ namespace Othello_for_three_players.Model.Players
 
             if(recurencyDepth > RecurencyDepth) // terminal
             {
-                best.Evaluation = EvaluateHeuristicsBoard(playerID, board);
+                best.Evaluation = EvaluateHeuristicsBoard(board);
                 return best;
             }
 
@@ -66,9 +67,12 @@ namespace Othello_for_three_players.Model.Players
             return (playerID == PlayerID.Player3) ? PlayerID.Player1 : (playerID + 1);
         }
 
-        public Vector3 EvaluateHeuristicsBoard(PlayerID ID, Board board)
+        public Vector3 EvaluateHeuristicsBoard(Board board)
         {
-            throw new NotImplementedException();
+            Bot1Evaluation evaluationBot = new Bot1Evaluation(board);
+            var scoreValue = evaluationBot.Evaluate();
+            return new Vector3((float)scoreValue.Item1, (float)scoreValue.Item2, 
+                (float)scoreValue.Item3);
         }
     }
 }
