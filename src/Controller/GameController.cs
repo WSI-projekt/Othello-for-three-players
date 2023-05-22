@@ -54,7 +54,8 @@ namespace Othello_for_three_players.Controller
             {
                 var player = turn%3 == 1 ? player1 : turn%3 == 2 ? player2 : player3;
                 turn++;
-                var move = player.MakeMoveOnlyForTesting(board);
+                //var move = player.MakeMoveOnlyForTesting(board);
+                var move = player.MakeMove(board);
                 if (!move.wasMade)
                 {
                     unableToMove++;

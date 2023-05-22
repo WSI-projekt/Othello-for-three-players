@@ -29,8 +29,10 @@
                 for(int j = 0; j < Board.Size; j++)
                 {
                     int temp = (int)board[i,j] - 1;
-                    if (temp != -1) { }
-                    tab[temp]+= evaluationtab[i,j];
+                    if (temp != -1)
+                    {
+                        tab[temp] += evaluationtab[i, j];
+                    }
                 }
             }
             tab[0] = tab[0] - (tab[1] + tab[2]) / 2.0;
