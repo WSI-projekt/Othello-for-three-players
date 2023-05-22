@@ -11,9 +11,9 @@
             makeMoveDelegate = makeMoveFunction;
         }
 
-        public override Move MakeMove(Board board)
+        public override (Move move, bool wasMade) MakeMove(Board board)
         {
-            return makeMoveDelegate(board, ID);
+            return (makeMoveDelegate(board, ID), true); //todo - fix hardcoded 'true' later on...
         }
         public override (Move move, bool wasMade) MakeMoveOnlyForTesting(Board board)
         {

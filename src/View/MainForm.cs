@@ -54,7 +54,7 @@ namespace Othello_for_three_players
             gameController = new GameController(new BotPlayer(PlayerID.Player1, 3, 10),
                 new BotPlayer(PlayerID.Player2, 3, 10),
                 new BotPlayer(PlayerID.Player3, 3, 10),
-                null, this);
+                null, this); // TODO - check if the upper sum in heuristics == 10??
             gameController.PrepareBoard();
             timer1.Start();
         }
