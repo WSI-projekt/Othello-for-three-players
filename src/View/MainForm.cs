@@ -25,6 +25,7 @@ namespace Othello_for_three_players
         Queue<(int row, int col)> fieldsToFlip;
         List<Move> clickableMoves = new List<Move>();
         int chosenRow, chosenCol;
+        int upperRecurBound = 356;
         public MainForm()
         {
             InitializeComponent();
@@ -54,9 +55,9 @@ namespace Othello_for_three_players
                 Color.FromArgb(210, 210, 210), Color.FromArgb(140, 140, 140),
                 Color.FromArgb(210, 210, 210), Color.FromArgb(215, 215, 215));
             NewDrawArea(681, 681);
-            gameController = new GameController(new BotPlayer(PlayerID.Player1, 3, 10),
-                new BotPlayer(PlayerID.Player2, 3, 10),
-                new BotPlayer(PlayerID.Player3, 3, 10),
+            gameController = new GameController(new BotPlayer(PlayerID.Player1, (int)player1RecDepthNumericUpDown.Value, upperRecurBound),
+                new BotPlayer(PlayerID.Player2, (int)player2RecDepthNumericUpDown.Value, upperRecurBound),
+                new BotPlayer(PlayerID.Player3, (int)player3RecDepthNumericUpDown.Value, upperRecurBound),
                 null, this);
             gameController.PrepareBoard();
         }
@@ -329,6 +330,10 @@ namespace Othello_for_three_players
             // method starts the work in the backgroungd - see BackgroundGame_DoWork
             StartSimulation.Enabled = false;
             Play.Enabled = false;
+            player1RecDepthNumericUpDown.Enabled = false;
+            player2RecDepthNumericUpDown.Enabled = false;
+            player3RecDepthNumericUpDown.Enabled = false;
+            gameController.UpdateRecurencyDepths((int)player1RecDepthNumericUpDown.Value, (int)player2RecDepthNumericUpDown.Value, (int)player3RecDepthNumericUpDown.Value);
             BackgroundSimulation.RunWorkerAsync();
         }
 
@@ -360,6 +365,10 @@ namespace Othello_for_three_players
         {
             StartSimulation.Enabled = false;
             Play.Enabled = false;
+            player1RecDepthNumericUpDown.Enabled = false;
+            player2RecDepthNumericUpDown.Enabled = false;
+            player3RecDepthNumericUpDown.Enabled = false;
+            gameController.UpdateRecurrencyDepths((int)player2RecDepthNumericUpDown.Value, (int)player3RecDepthNumericUpDown.Value);
             clickableMoves = gameController.StartGame();
             DrawClickableFields(Graphics.FromImage(gameBoard));
         }
@@ -401,7 +410,7 @@ namespace Othello_for_three_players
 
         private void BackgroundGame_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            if(!gameController.isGameFinished)
+            if (!gameController.isGameFinished)
                 DrawClickableFields(Graphics.FromImage(gameBoard));
             else
             {

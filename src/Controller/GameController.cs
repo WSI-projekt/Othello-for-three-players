@@ -28,6 +28,31 @@ namespace Othello_for_three_players.Controller
 
             board = new Board();
         }
+
+        public void UpdateRecurencyDepths(int player1Depth, int player2Depth, int player3Depth)
+        {
+            BotPlayer p1 = player1 as BotPlayer;
+            BotPlayer p2 = player2 as BotPlayer;
+            BotPlayer p3 = player3 as BotPlayer;
+            if(p1 != null && p2 != null && p3 != null)
+            {
+                p1.RecurencyDepth = player1Depth;
+                p2.RecurencyDepth = player2Depth;
+                p3.RecurencyDepth = player3Depth;
+            }
+        }
+
+        public void UpdateRecurrencyDepths(int player2Depth, int player3Depth)
+        {
+            BotPlayer p2 = player2 as BotPlayer;
+            BotPlayer p3 = player3 as BotPlayer;
+            if (p2 != null && p3 != null)
+            {
+                p2.RecurencyDepth = player2Depth;
+                p3.RecurencyDepth = player3Depth;
+            }
+        }
+
         public void PrepareBoard()
         {
             board.StartingPosition();
