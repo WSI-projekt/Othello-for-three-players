@@ -32,6 +32,7 @@
             panel1 = new Panel();
             Canvas = new PictureBox();
             Results = new GroupBox();
+            Play = new Button();
             groupBox2 = new GroupBox();
             white = new Label();
             red = new Label();
@@ -39,6 +40,7 @@
             Reset = new Button();
             StartSimulation = new Button();
             BackWork = new System.ComponentModel.BackgroundWorker();
+            BackgroundSimulation = new System.ComponentModel.BackgroundWorker();
             BackgroundGame = new System.ComponentModel.BackgroundWorker();
             tableLayoutPanel1.SuspendLayout();
             panel1.SuspendLayout();
@@ -82,10 +84,13 @@
             Canvas.SizeMode = PictureBoxSizeMode.CenterImage;
             Canvas.TabIndex = 0;
             Canvas.TabStop = false;
+            Canvas.MouseClick += Canvas_MouseClick;
+            Canvas.MouseMove += Canvas_MouseMove;
             // 
             // Results
             // 
             Results.BackColor = Color.Silver;
+            Results.Controls.Add(Play);
             Results.Controls.Add(groupBox2);
             Results.Controls.Add(Reset);
             Results.Controls.Add(StartSimulation);
@@ -96,17 +101,27 @@
             Results.TabIndex = 1;
             Results.TabStop = false;
             // 
+            // Play
+            // 
+            Play.Location = new Point(6, 44);
+            Play.Name = "Play";
+            Play.Size = new Size(132, 29);
+            Play.TabIndex = 6;
+            Play.Text = "Play the game";
+            Play.UseVisualStyleBackColor = true;
+            Play.Click += Play_Click;
+            // 
             // groupBox2
             // 
             groupBox2.Controls.Add(white);
             groupBox2.Controls.Add(red);
             groupBox2.Controls.Add(black);
-            groupBox2.Location = new Point(3, 79);
+            groupBox2.Location = new Point(3, 116);
             groupBox2.Name = "groupBox2";
             groupBox2.Size = new Size(135, 125);
             groupBox2.TabIndex = 5;
             groupBox2.TabStop = false;
-            groupBox2.Text = "Results";
+            groupBox2.Text = "Disks on board";
             // 
             // white
             // 
@@ -143,7 +158,7 @@
             // Reset
             // 
             Reset.Enabled = false;
-            Reset.Location = new Point(3, 44);
+            Reset.Location = new Point(3, 81);
             Reset.Name = "Reset";
             Reset.Size = new Size(135, 29);
             Reset.TabIndex = 4;
@@ -164,6 +179,11 @@
             // BackWork
             // 
             BackWork.DoWork += BackWork_DoWork;
+            // 
+            // BackgroundSimulation
+            // 
+            BackgroundSimulation.DoWork += BackgroundSimulation_DoWork;
+            BackgroundSimulation.RunWorkerCompleted += BackgroundSimulation_RunWorkerCompleted;
             // 
             // BackgroundGame
             // 
@@ -195,11 +215,13 @@
         private System.ComponentModel.BackgroundWorker BackWork;
         private GroupBox Results;
         private Button StartSimulation;
-        private System.ComponentModel.BackgroundWorker BackgroundGame;
+        private System.ComponentModel.BackgroundWorker BackgroundSimulation;
         private Button Reset;
         private GroupBox groupBox2;
         private Label white;
         private Label red;
         private Label black;
+        private Button Play;
+        private System.ComponentModel.BackgroundWorker BackgroundGame;
     }
 }

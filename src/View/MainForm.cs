@@ -18,10 +18,13 @@ namespace Othello_for_three_players
         List<LinearGradientBrush> RedDisks2 = new List<LinearGradientBrush>();
         List<LinearGradientBrush> WhiteDisks1 = new List<LinearGradientBrush>();
         List<LinearGradientBrush> WhiteDisks2 = new List<LinearGradientBrush>();
+        Pen fieldToClickPen = new Pen(Brushes.Cyan, 2);
         Board board;
         PlayerID playerID;
         Move move;
         Queue<(int row, int col)> fieldsToFlip;
+        List<Move> clickableMoves = new List<Move>();
+        int chosenRow, chosenCol;
         public MainForm()
         {
             InitializeComponent();
@@ -56,6 +59,10 @@ namespace Othello_for_three_players
                 new BotPlayer(PlayerID.Player3, 3, 10),
                 null, this);
             gameController.PrepareBoard();
+        }
+        public void SetAvailableMoves(List<Move> moves)
+        {
+            clickableMoves = moves;
         }
         public bool IsAnimationDone()
         {
@@ -249,6 +256,19 @@ namespace Othello_for_three_players
             g.SmoothingMode = SmoothingMode.Default;
             g.FillRectangle(Brushes.Green, 3 + col * 75, 3 + row * 75, 74, 74);
         }
+        public void DrawClickableField(Graphics g, int row, int col)
+        {
+            g.SmoothingMode = SmoothingMode.Default;
+            g.DrawRectangle(fieldToClickPen, (float)(4.5 + col * 75), (float)(4.5 + row * 75), 71, 71);
+        }
+        public void DrawClickableFields(Graphics g)
+        {
+            foreach (var move in clickableMoves)
+            {
+                DrawClickableField(g, move.Row, move.Column);
+            }
+            Canvas.Refresh();
+        }
         public void DrawFlippedDiskOut(Graphics g, List<LinearGradientBrush> diskBrushes, int row, int col, double scale, int width)
         {
             //a step in animation of flipping disk - this is the part for the disk that is on board
@@ -291,7 +311,7 @@ namespace Othello_for_three_players
                 white.Text = "White: " + stats.white.ToString();
             }));
         }
-        private void BackWork_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+        private void BackWork_DoWork(object sender, DoWorkEventArgs e)
         {
             // the animations are run using BackgroundWorker
             // this method calls all function necessary to draw everything
@@ -308,10 +328,11 @@ namespace Othello_for_three_players
             // the game controller's simulation is run using Background worker as well (otherwise the animation didn't show)
             // method starts the work in the backgroungd - see BackgroundGame_DoWork
             StartSimulation.Enabled = false;
-            BackgroundGame.RunWorkerAsync();
+            Play.Enabled = false;
+            BackgroundSimulation.RunWorkerAsync();
         }
 
-        private void BackgroundGame_DoWork(object sender, DoWorkEventArgs e)
+        private void BackgroundSimulation_DoWork(object sender, DoWorkEventArgs e)
         {
             // start the simulation
             // TestThreeMoves was a method that initially made only three moves at a time
@@ -319,7 +340,7 @@ namespace Othello_for_three_players
             gameController.BotSimulation();
         }
 
-        private void BackgroundGame_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void BackgroundSimulation_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             //StartSimulation.Enabled = true;
             Reset.Enabled = true;
@@ -330,8 +351,62 @@ namespace Othello_for_three_players
             DrawBoard(Graphics.FromImage(gameBoard));
             gameController.PrepareBoard();
             StartSimulation.Enabled = true;
+            Play.Enabled = true;
             Reset.Enabled = false;
             Canvas.Refresh();
+        }
+
+        private void Play_Click(object sender, EventArgs e)
+        {
+            StartSimulation.Enabled = false;
+            Play.Enabled = false;
+            clickableMoves = gameController.StartGame();
+            DrawClickableFields(Graphics.FromImage(gameBoard));
+        }
+
+
+        private void Canvas_MouseClick(object sender, MouseEventArgs e)
+        {
+            int offX = (tableLayoutPanel1.GetColumnWidths()[0] - gameBoard.Width) / 2, offY = (tableLayoutPanel1.GetRowHeights()[0] - gameBoard.Height) / 2;
+            foreach (var move in clickableMoves)
+            {
+                if (e.X - offX >= 3 + move.Column * 75 && e.X - offX <= 77 + move.Column * 75 && e.Y - offY >= 3 + move.Row * 75 && e.Y - offY <= 77 + move.Row * 75)
+                {
+                    chosenRow = move.Row;
+                    chosenCol = move.Column;
+                    clickableMoves.Clear();
+                    BackgroundGame.RunWorkerAsync();
+                    break;
+                }
+            }
+        }
+
+
+        private void Canvas_MouseMove(object sender, MouseEventArgs e)
+        {
+            int offX = (tableLayoutPanel1.GetColumnWidths()[0] - gameBoard.Width) / 2, offY = (tableLayoutPanel1.GetRowHeights()[0] - gameBoard.Height) / 2;
+            foreach (var move in clickableMoves)
+            {
+                if (e.X - offX >= 3 + move.Column * 75 && e.X - offX <= 77 + move.Column * 75 && e.Y - offY >= 3 + move.Row * 75 && e.Y - offY <= 77 + move.Row * 75)
+                {
+                    Cursor.Current = Cursors.Hand;
+                }
+            }
+        }
+
+        private void BackgroundGame_DoWork(object sender, DoWorkEventArgs e)
+        {
+            gameController.GameSimulation(chosenRow, chosenCol);
+        }
+
+        private void BackgroundGame_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if(!gameController.isGameFinished)
+                DrawClickableFields(Graphics.FromImage(gameBoard));
+            else
+            {
+                Reset.Enabled = true;
+            }
         }
     }
 }
