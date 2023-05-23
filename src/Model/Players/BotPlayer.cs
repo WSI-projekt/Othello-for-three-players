@@ -5,7 +5,7 @@ namespace Othello_for_three_players.Model.Players
 {
     public class BotPlayer : Player
     {
-        private int RecurencyDepth;
+        public int RecurencyDepth;
         private double HeuristicsUpperSumBound;
         public BotPlayer(PlayerID ID, int recurencyDepth, int upperSumBound) : base(ID)
         {
