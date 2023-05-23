@@ -11,6 +11,7 @@ namespace Othello_for_three_players.Controller
         private event GameEventHandler gameEvent;
         private Board board;
         private MainForm visualisation;
+        public bool isGameFinished { get; set; } = false;
         public GameController(Player player1, Player player2, Player player3, GameEventHandler handler, MainForm visualisation)
         {
             ValidatePlayer(player1, PlayerID.Player1);
@@ -68,10 +69,54 @@ namespace Othello_for_three_players.Controller
                 visualisation.ShowStats(board.PlayerStats());
                 unableToMove = 0;
             }
+            
         }
-        public void StartGame()
+        public void GameSimulation(int row, int column)
         {
-            throw new NotImplementedException();
+            var moveUser = new Move(PlayerID.Player1, row, column);
+            var boardcopy = Board.FromMove(moveUser, board);
+            visualisation.MakeMove(board, boardcopy, moveUser);
+            while (visualisation.IsAnimationDone()) ;
+            board.MakeMove(moveUser);
+            visualisation.ShowStats(board.PlayerStats());
+            int turn = 2, unableToMove = 0;
+            while(unableToMove<3)
+            {
+                var player = turn % 3 == 1 ? player1 : turn % 3 == 2 ? player2 : player3;
+                turn++;
+                if(player == player1)
+                {
+                    var possibleMoveList = board.GeneratePossibleMoves(player1.ID);
+                    if(possibleMoveList.Count() == 0)
+                    {
+                        unableToMove++;
+                        continue;
+                    }
+                    else
+                    {
+                        visualisation.SetAvailableMoves(possibleMoveList);
+                        break;
+                    }
+                }
+                var move = player.MakeMove(board);
+                if (!move.wasMade)
+                {
+                    unableToMove++;
+                    continue;
+                }
+                boardcopy = Board.FromMove(move.move, board);
+                visualisation.MakeMove(board, boardcopy, move.move);
+                while (visualisation.IsAnimationDone()) ;
+                board.MakeMove(move.move);
+                visualisation.ShowStats(board.PlayerStats());
+                unableToMove = 0;
+            }
+            if (unableToMove >= 3) isGameFinished = true;
+        }
+        public List<Move> StartGame()
+        {
+            var possible = board.GeneratePossibleMoves(PlayerID.Player1);
+            return possible;
         }
 
         public void AddGameEventObserver(GameEventHandler handler)
