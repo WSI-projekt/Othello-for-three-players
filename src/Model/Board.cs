@@ -209,6 +209,29 @@ namespace Othello_for_three_players.Model
             UpLeft
         }
 
+        public (int black, int white, int red) PlayerStats()
+        {
+            (int b, int w, int r) stats = (0,0,0);
+            for(int row = 0; row < Size; row++)
+            {
+                for(int col=0; col < Size;col++)
+                {
+                    switch (fields[row, col])
+                    {
+                        case (Field)PlayerID.Player1:
+                            stats.b++;
+                            break;
+                        case (Field)PlayerID.Player2:
+                            stats.w++;
+                            break;
+                        case (Field)PlayerID.Player3:
+                            stats.r++;
+                            break;
+                    }
+                }
+            }
+            return stats;
+        }
 
         private IEnumerable<SingleField> PlayersDiscs(PlayerID playerID)
         {

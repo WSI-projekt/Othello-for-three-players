@@ -28,20 +28,23 @@
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
             tableLayoutPanel1 = new TableLayoutPanel();
             panel1 = new Panel();
             Canvas = new PictureBox();
-            groupBox1 = new GroupBox();
+            Results = new GroupBox();
+            groupBox2 = new GroupBox();
+            white = new Label();
+            red = new Label();
+            black = new Label();
+            Reset = new Button();
             StartSimulation = new Button();
-            Test = new Button();
             BackWork = new System.ComponentModel.BackgroundWorker();
             BackgroundGame = new System.ComponentModel.BackgroundWorker();
-            timer1 = new System.Windows.Forms.Timer(components);
             tableLayoutPanel1.SuspendLayout();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)Canvas).BeginInit();
-            groupBox1.SuspendLayout();
+            Results.SuspendLayout();
+            groupBox2.SuspendLayout();
             SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -50,14 +53,14 @@
             tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 150F));
             tableLayoutPanel1.Controls.Add(panel1, 0, 0);
-            tableLayoutPanel1.Controls.Add(groupBox1, 1, 0);
+            tableLayoutPanel1.Controls.Add(Results, 1, 0);
             tableLayoutPanel1.Dock = DockStyle.Fill;
             tableLayoutPanel1.Location = new Point(0, 0);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
             tableLayoutPanel1.RowCount = 1;
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            tableLayoutPanel1.Size = new Size(1182, 753);
+            tableLayoutPanel1.Size = new Size(1182, 853);
             tableLayoutPanel1.TabIndex = 0;
             // 
             // panel1
@@ -66,7 +69,7 @@
             panel1.Dock = DockStyle.Fill;
             panel1.Location = new Point(3, 3);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1026, 747);
+            panel1.Size = new Size(1026, 847);
             panel1.TabIndex = 0;
             // 
             // Canvas
@@ -75,25 +78,82 @@
             Canvas.Dock = DockStyle.Fill;
             Canvas.Location = new Point(0, 0);
             Canvas.Name = "Canvas";
-            Canvas.Size = new Size(1026, 747);
+            Canvas.Size = new Size(1026, 847);
             Canvas.SizeMode = PictureBoxSizeMode.CenterImage;
             Canvas.TabIndex = 0;
             Canvas.TabStop = false;
             // 
-            // groupBox1
+            // Results
             // 
-            groupBox1.Controls.Add(StartSimulation);
-            groupBox1.Controls.Add(Test);
-            groupBox1.Dock = DockStyle.Fill;
-            groupBox1.Location = new Point(1035, 3);
-            groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(144, 747);
-            groupBox1.TabIndex = 1;
-            groupBox1.TabStop = false;
+            Results.BackColor = Color.Silver;
+            Results.Controls.Add(groupBox2);
+            Results.Controls.Add(Reset);
+            Results.Controls.Add(StartSimulation);
+            Results.Dock = DockStyle.Fill;
+            Results.Location = new Point(1035, 3);
+            Results.Name = "Results";
+            Results.Size = new Size(144, 847);
+            Results.TabIndex = 1;
+            Results.TabStop = false;
+            // 
+            // groupBox2
+            // 
+            groupBox2.Controls.Add(white);
+            groupBox2.Controls.Add(red);
+            groupBox2.Controls.Add(black);
+            groupBox2.Location = new Point(3, 79);
+            groupBox2.Name = "groupBox2";
+            groupBox2.Size = new Size(135, 125);
+            groupBox2.TabIndex = 5;
+            groupBox2.TabStop = false;
+            groupBox2.Text = "Results";
+            // 
+            // white
+            // 
+            white.AutoSize = true;
+            white.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            white.ForeColor = SystemColors.ButtonFace;
+            white.Location = new Point(6, 53);
+            white.Name = "white";
+            white.Size = new Size(68, 20);
+            white.TabIndex = 2;
+            white.Text = "White: 3";
+            // 
+            // red
+            // 
+            red.AutoSize = true;
+            red.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            red.ForeColor = Color.FromArgb(192, 0, 0);
+            red.Location = new Point(6, 87);
+            red.Name = "red";
+            red.Size = new Size(53, 20);
+            red.TabIndex = 1;
+            red.Text = "Red: 3";
+            // 
+            // black
+            // 
+            black.AutoSize = true;
+            black.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            black.Location = new Point(6, 23);
+            black.Name = "black";
+            black.Size = new Size(64, 20);
+            black.TabIndex = 0;
+            black.Text = "Black: 3";
+            // 
+            // Reset
+            // 
+            Reset.Enabled = false;
+            Reset.Location = new Point(3, 44);
+            Reset.Name = "Reset";
+            Reset.Size = new Size(135, 29);
+            Reset.TabIndex = 4;
+            Reset.Text = "Reset board";
+            Reset.UseVisualStyleBackColor = true;
+            Reset.Click += Reset_Click;
             // 
             // StartSimulation
             // 
-            StartSimulation.Location = new Point(3, 44);
+            StartSimulation.Location = new Point(3, 9);
             StartSimulation.Name = "StartSimulation";
             StartSimulation.Size = new Size(135, 29);
             StartSimulation.TabIndex = 3;
@@ -101,44 +161,29 @@
             StartSimulation.UseVisualStyleBackColor = true;
             StartSimulation.Click += StartSimulation_Click;
             // 
-            // Test
-            // 
-            Test.Location = new Point(3, 9);
-            Test.Name = "Test";
-            Test.Size = new Size(135, 29);
-            Test.TabIndex = 2;
-            Test.Text = "AnimationTest";
-            Test.UseVisualStyleBackColor = true;
-            Test.Click += Test_Click;
-            // 
             // BackWork
             // 
             BackWork.DoWork += BackWork_DoWork;
-            BackWork.ProgressChanged += BackWork_ProgressChanged;
-            BackWork.RunWorkerCompleted += BackWork_RunWorkerCompleted;
             // 
             // BackgroundGame
             // 
             BackgroundGame.DoWork += BackgroundGame_DoWork;
             BackgroundGame.RunWorkerCompleted += BackgroundGame_RunWorkerCompleted;
             // 
-            // timer1
-            // 
-            timer1.Interval = 50;
-            timer1.Tick += timer1_Tick;
-            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1182, 753);
+            ClientSize = new Size(1182, 853);
             Controls.Add(tableLayoutPanel1);
             Name = "MainForm";
             Text = "Othello";
             tableLayoutPanel1.ResumeLayout(false);
             panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)Canvas).EndInit();
-            groupBox1.ResumeLayout(false);
+            Results.ResumeLayout(false);
+            groupBox2.ResumeLayout(false);
+            groupBox2.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -148,10 +193,13 @@
         private Panel panel1;
         private PictureBox Canvas;
         private System.ComponentModel.BackgroundWorker BackWork;
-        private GroupBox groupBox1;
-        private Button Test;
+        private GroupBox Results;
         private Button StartSimulation;
         private System.ComponentModel.BackgroundWorker BackgroundGame;
-        private System.Windows.Forms.Timer timer1;
+        private Button Reset;
+        private GroupBox groupBox2;
+        private Label white;
+        private Label red;
+        private Label black;
     }
 }

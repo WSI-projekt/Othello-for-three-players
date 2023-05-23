@@ -54,9 +54,8 @@ namespace Othello_for_three_players
             gameController = new GameController(new BotPlayer(PlayerID.Player1, 3, 10),
                 new BotPlayer(PlayerID.Player2, 3, 10),
                 new BotPlayer(PlayerID.Player3, 3, 10),
-                null, this); // TODO - check if the upper sum in heuristics == 10??
+                null, this);
             gameController.PrepareBoard();
-            timer1.Start();
         }
         public bool IsAnimationDone()
         {
@@ -106,11 +105,6 @@ namespace Othello_for_three_players
             }
             return new List<LinearGradientBrush>();
         }
-        /*private Move MakeMove(Board board, PlayerID ID, Move move)
-        {
-            // TODO: Make move action on view
-            throw new NotImplementedException();
-        }*/
         public void MakeMove(Board board, Board beforemove, Move move)
         {
             // You call this function from controller to visualise the move that is made
@@ -157,9 +151,6 @@ namespace Othello_for_three_players
             gameBoard = new Bitmap(w, h);
             Canvas.Image = gameBoard;
             DrawBoard(Graphics.FromImage(gameBoard));
-            // Board board = new Board();
-            // board.StartingPosition();
-
         }
         private void DrawDisksOnBoard(Graphics g, Board board, Queue<(int row, int col)> fieldsToChange)
         {
@@ -204,7 +195,7 @@ namespace Othello_for_three_players
             for (int i = 10; i >= 0; i--)
             {
                 DrawScaleDisk(g, ChooseBrushes((int)playerID, move.Row % 2 == move.Column % 2), move.Row, move.Column, 1 + i * 0.1);
-                //  Canvas.Refresh();
+                Canvas.Invoke(new Action(Canvas.Refresh));
                 Thread.Sleep(20);
             }
         }
@@ -230,7 +221,7 @@ namespace Othello_for_three_players
                     DrawField(g, field.row, field.col);
                     DrawFlippedDiskOut(g, ChooseBrushes((int)board[field.row, field.col], field.row % 2 == field.col % 2), field.row, field.col, s, wid);
                 }
-                //  Canvas.Refresh();
+                Canvas.Invoke(new Action(Canvas.Refresh));
                 Thread.Sleep(25);
             }
             foreach (var field in fieldsToChange)
@@ -238,7 +229,7 @@ namespace Othello_for_three_players
                 DrawField(g, field.row, field.col);
                 g.FillRectangle(Brushes.DarkOrange, 5 + field.col * 75, 5 + field.row * 75 + 35 - wid + wid / 2, 70, wid);
             }
-            // Canvas.Refresh();
+            Canvas.Invoke(new Action(Canvas.Refresh));
             Thread.Sleep(5);
             for (int i = 11; i >= 0; i--)
             {
@@ -249,7 +240,7 @@ namespace Othello_for_three_players
                     DrawField(g, field.row, field.col);
                     DrawFlippedDiskIn(g, ChooseBrushes((int)playerID, field.row % 2 == field.col % 2), field.row, field.col, s, wid);
                 }
-                //   Canvas.Refresh();
+                Canvas.Invoke(new Action(Canvas.Refresh));
                 Thread.Sleep(25);
             }
         }
@@ -285,11 +276,21 @@ namespace Othello_for_three_players
             g.FillEllipse(diskBrushes[2], (float)(5 + 8.25 + col * 75), (float)(5 + 9.25 + row * 75 + off4) - offw, 52, s4);
         }
 
-        private void Test_Click(object sender, EventArgs e)
+        public void ShowStats((int black, int white, int red) stats)
         {
-            // this was used to test a single animation, it wont be needed anymore
+            black.Invoke(new Action(delegate ()
+            {
+                black.Text = "Black: " + stats.black.ToString();
+            }));
+            red.Invoke(new Action(delegate ()
+            {
+                red.Text = "Red: " + stats.red.ToString();
+            }));
+            white.Invoke(new Action(delegate ()
+            {
+                white.Text = "White: " + stats.white.ToString();
+            }));
         }
-
         private void BackWork_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
             // the animations are run using BackgroundWorker
@@ -301,21 +302,13 @@ namespace Othello_for_three_players
             DrawFlippedDisks(Graphics.FromImage(gameBoard), fieldsToFlip, playerID, board);
         }
 
-        private void BackWork_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
-        {
-            // Test.Enabled = true;
-        }
-
         private void StartSimulation_Click(object sender, EventArgs e)
         {
             //start game simulation on click
             // the game controller's simulation is run using Background worker as well (otherwise the animation didn't show)
             // method starts the work in the backgroungd - see BackgroundGame_DoWork
-
-            Test.Enabled = false;
             StartSimulation.Enabled = false;
             BackgroundGame.RunWorkerAsync();
-
         }
 
         private void BackgroundGame_DoWork(object sender, DoWorkEventArgs e)
@@ -323,21 +316,21 @@ namespace Othello_for_three_players
             // start the simulation
             // TestThreeMoves was a method that initially made only three moves at a time
             // it is now a simulation of the game where the players place disks in the first place they find
-            gameController.TestThreeMoves();
+            gameController.BotSimulation();
         }
 
         private void BackgroundGame_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            //StartSimulation.Enabled = true;
+            Reset.Enabled = true;
+        }
+
+        private void Reset_Click(object sender, EventArgs e)
+        {
+            DrawBoard(Graphics.FromImage(gameBoard));
+            gameController.PrepareBoard();
             StartSimulation.Enabled = true;
-        }
-
-        private void BackWork_ProgressChanged(object sender, ProgressChangedEventArgs e)
-        {
-
-        }
-
-        private void timer1_Tick(object sender, EventArgs e)
-        {
+            Reset.Enabled = false;
             Canvas.Refresh();
         }
     }
