@@ -7,10 +7,23 @@ namespace Othello_for_three_players.Model.Players
     {
         public int RecurencyDepth;
         private double HeuristicsUpperSumBound;
+        private IEvaluation evaluation;
+        public BotPlayer(PlayerID ID, int recurencyDepth, int upperSumBound, IEvaluation evaluation) : base(ID)
+        {
+            RecurencyDepth = recurencyDepth;
+            HeuristicsUpperSumBound = upperSumBound;
+            this.evaluation = evaluation;
+
+        }
         public BotPlayer(PlayerID ID, int recurencyDepth, int upperSumBound) : base(ID)
         {
             RecurencyDepth = recurencyDepth;
             HeuristicsUpperSumBound = upperSumBound;
+
+        }
+        public void setEvaluation(IEvaluation evaluation)
+        {
+            this.evaluation = evaluation;
         }
         public override (Move move,bool wasMade) MakeMoveOnlyForTesting(Board board)
         {
@@ -31,7 +44,7 @@ namespace Othello_for_three_players.Model.Players
 
             if(recurencyDepth > RecurencyDepth) // terminal
             {
-                best.Evaluation = EvaluateHeuristicsBoard(board);
+                best.Evaluation = EvaluateHeuristicsBoard();
                 return (best, true);
             }
 
@@ -73,10 +86,9 @@ namespace Othello_for_three_players.Model.Players
             return (playerID == PlayerID.Player3) ? PlayerID.Player1 : (playerID + 1);
         }
 
-        public Vector3 EvaluateHeuristicsBoard(Board board)
+        public Vector3 EvaluateHeuristicsBoard()
         {
-            Bot1Evaluation evaluationBot = new Bot1Evaluation(board);
-            var scoreValue = evaluationBot.Evaluate();
+            var scoreValue = evaluation.Evaluate();
             return new Vector3((float)scoreValue.Item1, (float)scoreValue.Item2, 
                 (float)scoreValue.Item3);
         }

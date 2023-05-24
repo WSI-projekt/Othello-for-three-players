@@ -12,7 +12,7 @@ namespace Othello_for_three_players.Controller
         private Board board;
         private MainForm visualisation;
         public bool isGameFinished { get; set; } = false;
-        public GameController(Player player1, Player player2, Player player3, GameEventHandler handler, MainForm visualisation)
+        public GameController(Player player1, Player player2, Player player3, GameEventHandler handler, Board board, MainForm visualisation)
         {
             ValidatePlayer(player1, PlayerID.Player1);
             ValidatePlayer(player2, PlayerID.Player2);
@@ -26,7 +26,7 @@ namespace Othello_for_three_players.Controller
 
             this.visualisation = visualisation;
 
-            board = new Board();
+            this.board = board;
         }
 
         public void UpdateRecurencyDepths(int player1Depth, int player2Depth, int player3Depth)
