@@ -1,5 +1,6 @@
 using Othello_for_three_players.Controller;
 using Othello_for_three_players.Model;
+using Othello_for_three_players.Model.Heuristic;
 using Othello_for_three_players.Model.Players;
 using System.ComponentModel;
 using System.Drawing.Drawing2D;
@@ -55,10 +56,11 @@ namespace Othello_for_three_players
                 Color.FromArgb(210, 210, 210), Color.FromArgb(140, 140, 140),
                 Color.FromArgb(210, 210, 210), Color.FromArgb(215, 215, 215));
             NewDrawArea(681, 681);
-            gameController = new GameController(new BotPlayer(PlayerID.Player1, (int)player1RecDepthNumericUpDown.Value, upperRecurBound),
-                new BotPlayer(PlayerID.Player2, (int)player2RecDepthNumericUpDown.Value, upperRecurBound),
-                new BotPlayer(PlayerID.Player3, (int)player3RecDepthNumericUpDown.Value, upperRecurBound),
-                null, this);
+            Board board = new Board();
+            gameController = new GameController(new BotPlayer(PlayerID.Player1, (int)player1RecDepthNumericUpDown.Value, upperRecurBound, new CornerEvaluation(board)),
+                new BotPlayer(PlayerID.Player2, (int)player2RecDepthNumericUpDown.Value, upperRecurBound,new PegsAmountEvaluation(board)),
+                new BotPlayer(PlayerID.Player3, (int)player3RecDepthNumericUpDown.Value, upperRecurBound, new StabilityEvaluation(board) ),
+                null, board, this);
             gameController.PrepareBoard();
         }
         public void SetAvailableMoves(List<Move> moves)
