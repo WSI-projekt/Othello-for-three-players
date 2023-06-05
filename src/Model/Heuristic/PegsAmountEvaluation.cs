@@ -23,10 +23,10 @@
                     }
                 }
             }
-            tab[0] = tab[0] - (tab[1] + tab[2]) / 2.0;
-            tab[1] = tab[1] - (tab[0] + tab[2]) / 2.0;
-            tab[2] = tab[2] - (tab[1] + tab[0]) / 2.0;
-            return (tab[0], tab[1], tab[2]);
+            double res1 = tab[0] - (tab[1] + tab[2]) / 2.0;
+            double res2 = tab[1] - (tab[0] + tab[2]) / 2.0;
+            double res3 = tab[2] - (tab[1] + tab[0]) / 2.0;
+            return (res1, res2, res3);
         }
     }
 }
